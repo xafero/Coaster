@@ -51,7 +51,8 @@ namespace Funny
                                     new CProperty { Type = "int", Name = "Id" },
                                     new CProperty { Type = "string", Name = "FirstName" },
                                     new CProperty { Type = "string", Name = "LastName" },
-                                    new CMethod { Name = "SetIt" }
+                                    new CMethod { Name = "SetIt" },
+                                    new CEvent { Name = "WebOpened" }
                                 }
                             },
                             new CEnum

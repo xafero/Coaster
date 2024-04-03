@@ -63,6 +63,15 @@ namespace Coaster.Roslyn
             return clas;
         }
 
+        public static EventDeclarationSyntax ToSyntax(this CEvent cla)
+        {
+            var rt = SyntaxFactory.ParseTypeName(cla.Type);
+            var clas = SyntaxFactory.EventDeclaration(rt, cla.Name)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            clas = clas.WithSemicolonToken(GetSemi());
+            return clas;
+        }
+
         public static SyntaxToken GetSemi()
         {
             return SyntaxFactory.Token(SyntaxKind.SemicolonToken);
@@ -154,6 +163,7 @@ namespace Coaster.Roslyn
                 CNamespace n => ToSyntax(n),
                 CClass c => ToSyntax(c),
                 CField f => ToSyntax(f),
+                CEvent v => ToSyntax(v),
                 CProperty p => ToSyntax(p),
                 CMethod m => ToSyntax(m),
                 _ => throw new InvalidOperationException($"{member} ?!")
