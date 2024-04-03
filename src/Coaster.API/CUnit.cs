@@ -2,7 +2,7 @@
 
 namespace Coaster
 {
-    public sealed class CNamespace : CMember
+    public sealed class CUnit
     {
         public ISet<string> Usings { get; set; } = new SortedSet<string>();
 

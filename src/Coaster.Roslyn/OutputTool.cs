@@ -41,6 +41,23 @@ namespace Coaster.Roslyn
             return clas;
         }
 
+        public static RecordDeclarationSyntax ToSyntax(this CRecord cla)
+        {
+            var rec = SyntaxFactory.Token(SyntaxKind.RecordKeyword);
+            var clas = SyntaxFactory.RecordDeclaration(rec, cla.Name)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            if (ToBaseTypes(cla) is { } bases)
+                clas = clas.AddBaseListTypes(bases);
+            clas = clas.WithParameterList(SyntaxFactory.ParameterList());
+            clas = clas.WithSemicolonToken(GetSemi());
+            return clas;
+        }
+
+        public static SyntaxToken GetSemi()
+        {
+            return SyntaxFactory.Token(SyntaxKind.SemicolonToken);
+        }
+
         public static StructDeclarationSyntax ToSyntax(this CStruct cla)
         {
             var clas = SyntaxFactory.StructDeclaration(cla.Name)
@@ -106,13 +123,24 @@ namespace Coaster.Roslyn
             return space;
         }
 
+        public static CompilationUnitSyntax ToSyntax(this CUnit nsp)
+        {
+            var usings = nsp.Usings.Select(ToUsing).ToArray();
+            var space = SyntaxFactory.CompilationUnit()
+                .AddUsings(usings)
+                .AddMembers(nsp.Members.Select(ToSyntax).ToArray());
+            return space;
+        }
+
         public static MemberDeclarationSyntax ToSyntax(this CMember member)
         {
             return member switch
             {
                 CEnum e => ToSyntax(e),
                 CStruct s => ToSyntax(s),
+                CRecord r => ToSyntax(r),
                 CInterface i => ToSyntax(i),
+                CNamespace n => ToSyntax(n),
                 CClass c => ToSyntax(c),
                 CField f => ToSyntax(f),
                 CProperty p => ToSyntax(p),

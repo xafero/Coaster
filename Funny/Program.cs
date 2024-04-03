@@ -31,36 +31,46 @@ namespace Funny
 
         private static void Create()
         {
-            var nsp = new CNamespace
+            var nsp = new CUnit
             {
                 Usings = { "System.Linq", "System", "System.IO" },
-                Name = "Example",
                 Members =
                 {
-                    new CClass
+                    new CNamespace
                     {
-                        Name = "Person",
-                        Interfaces = { typeof(ISerializable).FullName! },
+                        Name = "Example",
                         Members =
                         {
-                            new CField { Name = "serialVersionUID", Type = "long" },
-                            new CProperty { Type = "int", Name = "Id" },
-                            new CProperty { Type = "string", Name = "FirstName" },
-                            new CProperty { Type = "string", Name = "LastName" },
-                            new CMethod { Name = "SetIt" }
+                            new CClass
+                            {
+                                Name = "Person",
+                                Interfaces = { typeof(ISerializable).FullName! },
+                                Members =
+                                {
+                                    new CField { Name = "serialVersionUID", Type = "long" },
+                                    new CProperty { Type = "int", Name = "Id" },
+                                    new CProperty { Type = "string", Name = "FirstName" },
+                                    new CProperty { Type = "string", Name = "LastName" },
+                                    new CMethod { Name = "SetIt" }
+                                }
+                            },
+                            new CEnum
+                            {
+                                Name = "Funny"
+                            },
+                            new CInterface
+                            {
+                                Name = "IConductor"
+                            },
+                            new CStruct
+                            {
+                                Name = "Half"
+                            },
+                            new CRecord
+                            {
+                                Name = "DailyTemperature"
+                            }
                         }
-                    },
-                    new CEnum
-                    {
-                        Name = "Funny"
-                    },
-                    new CInterface
-                    {
-                        Name = "IConductor"
-                    },
-                    new CStruct
-                    {
-                        Name = "Half"
                     }
                 }
             };
