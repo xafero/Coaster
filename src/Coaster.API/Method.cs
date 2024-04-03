@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-
-namespace Coaster
+﻿namespace Coaster
 {
     public sealed class Method : Member
     {

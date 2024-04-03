@@ -40,36 +40,20 @@ namespace Funny
                     new Class
                     {
                         Name = "Person",
-                        Interfaces = { typeof(ISerializable).FullName! }
+                        Interfaces = { typeof(ISerializable).FullName! },
+                        Members =
+                        {
+                            new Field { Name = "serialVersionUID", Type = "long" },
+                            new Property { Type = "int", Name = "Id" },
+                            new Property { Type = "string", Name = "FirstName" },
+                            new Property { Type = "string", Name = "LastName" },
+                            new Method { Name = "SetIt" }
+                        }
                     }
                 }
             };
-            
+
             Console.WriteLine(nsp.ToSyntax().ToText());
-
-            /*            
-
-            
-            ((dynamic)javaClass.addField())
-                .setName("serialVersionUID")
-                .setType("long")
-                .setLiteralInitializer("1L")
-                .setPrivate()
-                .setStatic(true)
-                .setFinal(true);
-
-            javaClass.addProperty(typeof(Integer), "id").setMutable(false);
-            javaClass.addProperty(typeof(String), "firstName");
-            javaClass.addProperty("String", "lastName");
-
-            ((dynamic)javaClass.addMethod())
-                .setConstructor(true)
-                .setPublic()
-                .setBody("this.id = id;")
-                .addParameter(typeof(Integer), "id");
-
-            Console.WriteLine(javaClass);
-            */
         }
     }
 }

@@ -1,4 +1,3 @@
-using Coaster.Impl;
 using Xunit;
 
 namespace Coaster.Tests

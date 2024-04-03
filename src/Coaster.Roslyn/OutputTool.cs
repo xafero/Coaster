@@ -76,11 +76,14 @@ namespace Coaster.Roslyn
 
         public static MemberDeclarationSyntax ToSyntax(this Member member)
         {
-            if (member is Class c)
+            return member switch
             {
-                return ToSyntax(c);
-            }
-            throw new InvalidOperationException($"{member} ?!");
+                Class c => ToSyntax(c),
+                Field f => ToSyntax(f),
+                Property p => ToSyntax(p),
+                Method m => ToSyntax(m),
+                _ => throw new InvalidOperationException($"{member} ?!")
+            };
         }
 
         public static UsingDirectiveSyntax ToUsing(string text)
