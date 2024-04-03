@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Coaster.Impl\Coaster.Impl.csproj" />
+    <ProjectReference Include="..\Coaster\Coaster.csproj" />
   </ItemGroup>
 
 </Project>

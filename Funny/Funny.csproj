@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Coaster.Impl\Coaster.Impl.csproj" />
+    <ProjectReference Include="..\src\Coaster\Coaster.csproj" />
   </ItemGroup>
 
 </Project>
