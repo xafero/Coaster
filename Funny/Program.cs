@@ -31,24 +31,36 @@ namespace Funny
 
         private static void Create()
         {
-            var nsp = new Namespace
+            var nsp = new CNamespace
             {
                 Usings = { "System.Linq", "System", "System.IO" },
                 Name = "Example",
                 Members =
                 {
-                    new Class
+                    new CClass
                     {
                         Name = "Person",
                         Interfaces = { typeof(ISerializable).FullName! },
                         Members =
                         {
-                            new Field { Name = "serialVersionUID", Type = "long" },
-                            new Property { Type = "int", Name = "Id" },
-                            new Property { Type = "string", Name = "FirstName" },
-                            new Property { Type = "string", Name = "LastName" },
-                            new Method { Name = "SetIt" }
+                            new CField { Name = "serialVersionUID", Type = "long" },
+                            new CProperty { Type = "int", Name = "Id" },
+                            new CProperty { Type = "string", Name = "FirstName" },
+                            new CProperty { Type = "string", Name = "LastName" },
+                            new CMethod { Name = "SetIt" }
                         }
+                    },
+                    new CEnum
+                    {
+                        Name = "Funny"
+                    },
+                    new CInterface
+                    {
+                        Name = "IConductor"
+                    },
+                    new CStruct
+                    {
+                        Name = "Half"
                     }
                 }
             };

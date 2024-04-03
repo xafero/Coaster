@@ -1,6 +1,6 @@
 ﻿namespace Coaster
 {
-    public sealed class Field : Member
+    public sealed class CProperty : CMember
     {
         public string Type { get; set; }
     }

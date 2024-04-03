@@ -2,10 +2,10 @@
 
 namespace Coaster
 {
-    public sealed class Class : Member
+    public sealed class CStruct : CMember, IHasInterfaces
     {
         public ISet<string> Interfaces { get; set; } = new HashSet<string>();
 
-        public IList<Member> Members { get; set; } = new List<Member>();
+        public IList<CMember> Members { get; set; } = new List<CMember>();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Coaster
 {
-    public sealed class Method : Member
+    public sealed class CMethod : CMember
     {
         public string Type { get; set; } = "void";
     }
