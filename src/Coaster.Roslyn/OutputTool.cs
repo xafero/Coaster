@@ -6,8 +6,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Coaster.Roslyn
 {
-    public static class CSharpTool
+    public static class OutputTool
     {
+        public static NameSyntax ToName(string text)
+        {
+            var syntax = SyntaxFactory.ParseName(text);
+            return syntax;
+        }
+
         public static string ToText(this SyntaxNode node)
         {
             var code = node.NormalizeWhitespace().ToFullString();
@@ -30,7 +36,7 @@ namespace Coaster.Roslyn
 
         public static NamespaceDeclarationSyntax ToSyntax(this Namespace nsp)
         {
-            var name = CodeTool.ToName(nsp.Name);
+            var name = ToName(nsp.Name);
             var usings = nsp.Usings.Select(ToUsing).ToArray();
             var space = SyntaxFactory.NamespaceDeclaration(name)
                 .AddUsings(usings)
@@ -49,7 +55,7 @@ namespace Coaster.Roslyn
 
         public static UsingDirectiveSyntax ToUsing(string text)
         {
-            var name = CodeTool.ToName(text);
+            var name = ToName(text);
             return SyntaxFactory.UsingDirective(name);
         }
     }
