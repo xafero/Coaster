@@ -34,6 +34,27 @@ namespace Coaster.Roslyn
             return clas;
         }
 
+        public static FieldDeclarationSyntax ToSyntax(this Field fld)
+        {
+            var variable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName(fld.Type))
+                .AddVariables(SyntaxFactory.VariableDeclarator(fld.Name));
+            var field = SyntaxFactory.FieldDeclaration(variable)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
+            return field;
+        }
+
+        public static PropertyDeclarationSyntax ToSyntax(this Property prop)
+        {
+            var get = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            var set = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(prop.Type), prop.Name)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddAccessorListAccessors(get, set);
+            return property;
+        }
+
         public static NamespaceDeclarationSyntax ToSyntax(this Namespace nsp)
         {
             var name = ToName(nsp.Name);
