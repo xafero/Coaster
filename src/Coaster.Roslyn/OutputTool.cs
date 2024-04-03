@@ -53,6 +53,16 @@ namespace Coaster.Roslyn
             return clas;
         }
 
+        public static DelegateDeclarationSyntax ToSyntax(this CDelegate cla)
+        {
+            var rt = SyntaxFactory.ParseTypeName(cla.Type);
+            var clas = SyntaxFactory.DelegateDeclaration(rt, cla.Name)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+            clas = clas.WithParameterList(SyntaxFactory.ParameterList());
+            clas = clas.WithSemicolonToken(GetSemi());
+            return clas;
+        }
+
         public static SyntaxToken GetSemi()
         {
             return SyntaxFactory.Token(SyntaxKind.SemicolonToken);
@@ -139,6 +149,7 @@ namespace Coaster.Roslyn
                 CEnum e => ToSyntax(e),
                 CStruct s => ToSyntax(s),
                 CRecord r => ToSyntax(r),
+                CDelegate d => ToSyntax(d),
                 CInterface i => ToSyntax(i),
                 CNamespace n => ToSyntax(n),
                 CClass c => ToSyntax(c),

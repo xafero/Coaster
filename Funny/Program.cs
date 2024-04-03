@@ -69,6 +69,10 @@ namespace Funny
                             new CRecord
                             {
                                 Name = "DailyTemperature"
+                            },
+                            new CDelegate
+                            {
+                                Name = "EventHandler"
                             }
                         }
                     }
