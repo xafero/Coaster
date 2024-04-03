@@ -30,8 +30,17 @@ namespace Coaster.Roslyn
             var bases = cla.Interfaces.Select(ToBaseType).ToArray();
             var clas = SyntaxFactory.ClassDeclaration(cla.Name)
                 .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .AddBaseListTypes(bases);
+                .AddBaseListTypes(bases)
+                .AddMembers(cla.Members.Select(ToSyntax).ToArray());
             return clas;
+        }
+
+        public static MethodDeclarationSyntax ToSyntax(this Method met)
+        {
+            var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .WithBody(SyntaxFactory.Block());
+            return method;
         }
 
         public static FieldDeclarationSyntax ToSyntax(this Field fld)
