@@ -72,6 +72,16 @@ clazz.Members.Add(new CMethod { Name = "Main" });
 Console.WriteLine(unit.ToText());
 ```
 
+### Formatting the C# Source Code
+
+Coaster formats the C# Source Code by calling the `Format()` method:
+
+```csharp
+var humanCode = "public class MyClass{ private string field;}";
+var formattedCode = Coast.Format(humanCode);
+Console.WriteLine(formattedCode);
+```
+
 ## License
 
 Everything is licensed according to [this](./LICENSE).
