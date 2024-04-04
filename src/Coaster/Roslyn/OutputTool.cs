@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Coaster.API;
 using Coaster.Model;
@@ -36,7 +37,7 @@ namespace Coaster.Roslyn
         public static ClassDeclarationSyntax ToSyntax(this CClass cla)
         {
             var clas = SyntaxFactory.ClassDeclaration(cla.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(GetModifiers(cla))
                 .AddMembers(cla.Members.Select(ToSyntax).ToArray());
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
@@ -47,7 +48,7 @@ namespace Coaster.Roslyn
         {
             var rec = SyntaxFactory.Token(SyntaxKind.RecordKeyword);
             var clas = SyntaxFactory.RecordDeclaration(rec, cla.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(GetModifiers(cla));
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
             clas = clas.WithParameterList(SyntaxFactory.ParameterList());
@@ -59,7 +60,7 @@ namespace Coaster.Roslyn
         {
             var rt = SyntaxFactory.ParseTypeName(cla.Type);
             var clas = SyntaxFactory.DelegateDeclaration(rt, cla.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(GetModifiers(cla));
             clas = clas.WithParameterList(SyntaxFactory.ParameterList());
             clas = clas.WithSemicolonToken(GetSemi());
             return clas;
@@ -69,7 +70,7 @@ namespace Coaster.Roslyn
         {
             var rt = SyntaxFactory.ParseTypeName(cla.Type);
             var clas = SyntaxFactory.EventDeclaration(rt, cla.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(GetModifiers(cla));
             clas = clas.WithSemicolonToken(GetSemi());
             return clas;
         }
@@ -82,7 +83,7 @@ namespace Coaster.Roslyn
         public static StructDeclarationSyntax ToSyntax(this CStruct cla)
         {
             var clas = SyntaxFactory.StructDeclaration(cla.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(GetModifiers(cla))
                 .AddMembers(cla.Members.Select(ToSyntax).ToArray());
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
@@ -92,23 +93,46 @@ namespace Coaster.Roslyn
         public static EnumDeclarationSyntax ToSyntax(this CEnum enu)
         {
             var ed = SyntaxFactory.EnumDeclaration(enu.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(GetModifiers(enu));
             return ed;
         }
 
         public static InterfaceDeclarationSyntax ToSyntax(this CInterface cla)
         {
             var clas = SyntaxFactory.InterfaceDeclaration(cla.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(GetModifiers(cla));
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
             return clas;
         }
 
+        public static SyntaxToken? ToSyntax(this Visibility vis)
+        {
+            switch (vis)
+            {
+                case Visibility.None: return null;
+                case Visibility.Private: return SyntaxFactory.Token(SyntaxKind.PrivateKeyword);
+                case Visibility.Protected: return SyntaxFactory.Token(SyntaxKind.ProtectedKeyword);
+                case Visibility.Internal: return SyntaxFactory.Token(SyntaxKind.InternalKeyword);
+                case Visibility.Public: return SyntaxFactory.Token(SyntaxKind.PublicKeyword);
+                default: throw new ArgumentOutOfRangeException(nameof(vis), vis, null);
+            }
+        }
+
+        public static SyntaxToken[] GetModifiers(object obj)
+        {
+            var list = new List<SyntaxToken>();
+            if (obj is IHasVisibility hv && ToSyntax(hv.Visibility) is { } hvv)
+                list.Add(hvv);
+            if (obj is IMaybeStatic { IsStatic: true })
+                list.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+            return list.ToArray();
+        }
+
         public static MethodDeclarationSyntax ToSyntax(this CMethod met)
         {
             var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(GetModifiers(met))
                 .WithBody(SyntaxFactory.Block());
             return method;
         }
@@ -118,7 +142,7 @@ namespace Coaster.Roslyn
             var variable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName(fld.Type))
                 .AddVariables(SyntaxFactory.VariableDeclarator(fld.Name));
             var field = SyntaxFactory.FieldDeclaration(variable)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
+                .AddModifiers(GetModifiers(fld));
             return field;
         }
 
@@ -129,7 +153,7 @@ namespace Coaster.Roslyn
             var set = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(prop.Type), prop.Name)
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(GetModifiers(prop))
                 .AddAccessorListAccessors(get, set);
             return property;
         }

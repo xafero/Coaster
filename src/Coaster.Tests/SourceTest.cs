@@ -1,11 +1,8 @@
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using Coaster.Model;
-using Coaster.Roslyn;
-using Coaster.Utils;
 using Xunit;
+using static Coaster.Tests.TestUtil;
 
 namespace Coaster.Tests
 {
@@ -39,7 +36,7 @@ namespace Coaster.Tests
         {
             var unit = new CUnit
             {
-                Usings = { "System.Linq", "System", "System.Runtime.Serialization", "System.IO" },
+                Usings = { "System.Runtime.Serialization" },
                 Members =
                 {
                     new CNamespace
@@ -90,32 +87,34 @@ namespace Coaster.Tests
             WriteAndCompare(unit, nameof(TestCreate));
         }
 
-        private static void WriteAndCompare(CUnit unit, string name)
+        [Fact]
+        public void TestCon()
         {
-            var code = unit.ToText();
-            WriteAndCompare(code, name);
-        }
+            var unit = new CUnit
+            {
+                Usings = { "System" },
+                Members =
+                {
+                    new CClass
+                    {
+                        Name = "TestClass",
+                        Members =
+                        {
+                            new CMethod { Name = "Main", IsStatic = true }
+                        }
+                    }
+                }
+            };
 
-        private static void WriteAndCompare(string code, string name)
-        {
-            name += ".cs";
-
-            WriteText(name, code);
-            var exp = ReadText($"res/{name}");
-
-            var expN = TextTool.Normalize(exp);
-            var codeN = TextTool.Normalize(code);
-            Assert.Equal(expN, codeN);
-        }
-
-        private static string ReadText(string file)
-        {
-            return File.ReadAllText(file, Encoding.UTF8);
-        }
-
-        private static void WriteText(string file, string text)
-        {
-            File.WriteAllText(file, text, Encoding.UTF8);
+            WriteAndCompare(unit, nameof(TestCon));
         }
     }
 }
+
+/*
+        void (string[] args)
+       {
+           // Display the number of command line arguments.
+           Console.WriteLine(args.Length);
+       }
+*/

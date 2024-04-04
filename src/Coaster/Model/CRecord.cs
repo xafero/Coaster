@@ -3,8 +3,10 @@ using Coaster.API;
 
 namespace Coaster.Model
 {
-    public sealed class CRecord : CMember, IHasInterfaces
+    public sealed class CRecord : CMember, IHasInterfaces, IHasVisibility
     {
         public ISet<string> Interfaces { get; set; } = new HashSet<string>();
+
+        public Visibility Visibility { get; set; } = Visibility.Public;
     }
 }
