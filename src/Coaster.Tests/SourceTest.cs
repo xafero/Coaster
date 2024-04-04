@@ -102,7 +102,7 @@ namespace Coaster.Tests
                                 Values =
                                 {
                                     new CEnumVal { Name = "None", Value = "0" },
-                                    new CEnumVal { Name = "Unknown", Value = "1" },
+                                    new CEnumVal { Name = "Unknown" },
                                     new CEnumVal { Name = "ConnectionLost", Value = "100" },
                                     new CEnumVal { Name = "OutlierReading", Value = "200" }
                                 }

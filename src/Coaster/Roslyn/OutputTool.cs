@@ -114,10 +114,27 @@ namespace Coaster.Roslyn
         public static EnumDeclarationSyntax ToSyntax(this CEnum enu)
         {
             var ed = SyntaxFactory.EnumDeclaration(enu.Name)
-                .AddModifiers(GetModifiers(enu));
+                .AddModifiers(GetModifiers(enu))
+                .WithMembers(ToSyntax(enu.Values));
             if (enu.Type is { Length: >= 1 } enumType)
                 ed = ed.WithBaseList(ToBaseListTypes(ToBaseType(enumType)));
             return ed;
+        }
+
+        public static SeparatedSyntaxList<EnumMemberDeclarationSyntax> ToSyntax(IList<CEnumVal> values)
+        {
+            var items = values.Select(v =>
+            {
+                var end = SyntaxFactory.EnumMemberDeclaration(v.Name);
+                if (v.Value is { Length: >= 1 } vv)
+                {
+                    var vve = SyntaxFactory.ParseExpression(vv);
+                    end = end.WithEqualsValue(SyntaxFactory.EqualsValueClause(vve));
+                }
+                return end;
+            });
+            var list = SyntaxFactory.SeparatedList(items);
+            return list;
         }
 
         public static InterfaceDeclarationSyntax ToSyntax(this CInterface cla)

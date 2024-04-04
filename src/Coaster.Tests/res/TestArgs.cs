@@ -30,7 +30,7 @@
     public enum ErrorCode : ushort
     {
         None = 0,
-        Unknown = 1,
+        Unknown,
         ConnectionLost = 100,
         OutlierReading = 200
     }
