@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
     <Authors>xafero</Authors>
     <Description>Library for C# source code generation</Description>
     <RepositoryType>git</RepositoryType>
