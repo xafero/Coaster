@@ -46,7 +46,7 @@ namespace Coaster.Roslyn
 
         public static MemberDeclarationSyntax[] ToMemberSyntax(IHasMembers owner)
         {
-            return owner.Members.Select(m => ToSyntax2(m, owner)).ToArray();
+            return owner.Members.Select(m => ToSyntax(m, owner)).ToArray();
         }
 
         public static RecordDeclarationSyntax ToSyntax(this CRecord cla)
@@ -263,7 +263,7 @@ namespace Coaster.Roslyn
             return space;
         }
 
-        public static MemberDeclarationSyntax ToSyntax2(this CMember member, IHasMembers owner)
+        public static MemberDeclarationSyntax ToSyntax(this CMember member, IHasMembers owner)
         {
             return member switch
             {
