@@ -101,10 +101,22 @@ namespace Coaster.Roslyn
             return clas;
         }
 
+        public static SeparatedSyntaxList<BaseTypeSyntax> ToSepBaseTypes(params BaseTypeSyntax[] types)
+        {
+            return SyntaxFactory.SeparatedList(types);
+        }
+
+        public static BaseListSyntax ToBaseListTypes(params BaseTypeSyntax[] types)
+        {
+            return SyntaxFactory.BaseList(ToSepBaseTypes(types));
+        }
+
         public static EnumDeclarationSyntax ToSyntax(this CEnum enu)
         {
             var ed = SyntaxFactory.EnumDeclaration(enu.Name)
                 .AddModifiers(GetModifiers(enu));
+            if (enu.Type is { Length: >= 1 } enumType)
+                ed = ed.WithBaseList(ToBaseListTypes(ToBaseType(enumType)));
             return ed;
         }
 

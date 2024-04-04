@@ -95,6 +95,17 @@ namespace Coaster.Tests
                                     new CProperty { Type = "double", Name = "Distance", Mode = PropMode.Get },
                                     new CMethod { Name = "SampleMethod" }
                                 }
+                            },
+                            new CEnum
+                            {
+                                Name = "ErrorCode", Type = "ushort",
+                                Values =
+                                {
+                                    new CEnumVal { Name = "None", Value = "0" },
+                                    new CEnumVal { Name = "Unknown", Value = "1" },
+                                    new CEnumVal { Name = "ConnectionLost", Value = "100" },
+                                    new CEnumVal { Name = "OutlierReading", Value = "200" }
+                                }
                             }
                         }
                     }
