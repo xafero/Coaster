@@ -12,6 +12,15 @@ namespace Coaster.Tests
     public class SourceTest
     {
         [Fact]
+        public void TestFormat()
+        {
+            const string human = "public class MyClass{ private string field;}";
+            var code = Coast.Format(human);
+
+            WriteAndCompare(code, $"{nameof(TestFormat)}.txt");
+        }
+
+        [Fact]
         public void TestModify()
         {
             var unit = Coast.Parse("public class SomeClass {}");
@@ -83,6 +92,11 @@ namespace Coaster.Tests
         private static void WriteAndCompare(CUnit unit, string name)
         {
             var code = unit.ToText();
+            WriteAndCompare(code, name);
+        }
+
+        private static void WriteAndCompare(string code, string name)
+        {
             WriteText(name, code);
             var exp = ReadText($"res/{name}");
 

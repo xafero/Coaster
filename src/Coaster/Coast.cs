@@ -32,5 +32,12 @@ namespace Coaster
                 _ => throw new InvalidOperationException($"{syntax} ?!")
             };
         }
+
+        public static string Format(string code)
+        {
+            var unit = Parse(code);
+            var formatted = unit.ToText();
+            return formatted;
+        }
     }
 }
