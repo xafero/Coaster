@@ -100,7 +100,12 @@ namespace Coaster.Tests
                         Name = "TestClass",
                         Members =
                         {
-                            new CMethod { Name = "Main", IsStatic = true }
+                            new CMethod
+                            {
+                                Name = "Main", IsStatic = true,
+                                Params = { new CParam { Type = "string[]", Name = "args" } },
+                                Statements = { "Console.WriteLine(args.Length)" }
+                            }
                         }
                     }
                 }
@@ -110,11 +115,3 @@ namespace Coaster.Tests
         }
     }
 }
-
-/*
-        void (string[] args)
-       {
-           // Display the number of command line arguments.
-           Console.WriteLine(args.Length);
-       }
-*/

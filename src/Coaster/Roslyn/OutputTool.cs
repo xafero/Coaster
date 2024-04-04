@@ -129,12 +129,42 @@ namespace Coaster.Roslyn
             return list.ToArray();
         }
 
+        public static ParameterSyntax ToSyntax(this CParam par)
+        {
+            var ipn = SyntaxFactory.Identifier(par.Name);
+            var prm = SyntaxFactory.Parameter(ipn)
+                .WithType(SyntaxFactory.ParseTypeName(par.Type));
+            return prm;
+        }
+
+        public static ParameterListSyntax ToParamSyntax(IHasParameters hp)
+        {
+            if (hp.Params.Count == 0)
+                return null;
+            var args = hp.Params.Select(p => p.ToSyntax());
+            var pas = SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(args));
+            return pas;
+        }
+
         public static MethodDeclarationSyntax ToSyntax(this CMethod met)
         {
             var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
                 .AddModifiers(GetModifiers(met))
-                .WithBody(SyntaxFactory.Block());
+                .WithBody(ToBlockSyntax(met.Statements));
+            if (ToParamSyntax(met) is { } pl)
+                method = method.WithParameterList(pl);
             return method;
+        }
+
+        public static BlockSyntax ToBlockSyntax(IEnumerable<string> statements)
+        {
+            var lines = statements.Select(s =>
+            {
+                var text = s.EndsWith(";") ? s : $"{s};";
+                return SyntaxFactory.ParseStatement(text);
+            });
+            var block = SyntaxFactory.Block(lines);
+            return block;
         }
 
         public static FieldDeclarationSyntax ToSyntax(this CField fld)
