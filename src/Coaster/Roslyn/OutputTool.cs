@@ -111,7 +111,8 @@ namespace Coaster.Roslyn
         public static InterfaceDeclarationSyntax ToSyntax(this CInterface cla)
         {
             var clas = SyntaxFactory.InterfaceDeclaration(cla.Name)
-                .AddModifiers(GetModifiers(cla));
+                .AddModifiers(GetModifiers(cla))
+                .AddMembers(ToMemberSyntax(cla));
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
             return clas;
@@ -179,12 +180,19 @@ namespace Coaster.Roslyn
             {
                 return ToCtrSyntax(met, owner);
             }
+            if (owner.IsInterface())
+            {
+                met.Body = null;
+                met.Visibility = Visibility.None;
+            }
             var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
                 .AddModifiers(GetModifiers(met));
             if (ToArrowSyntax(met) is { } arrow)
                 method = method.WithExpressionBody(arrow).WithSemicolonToken(GetSemi());
             else if (ToBlockSyntax(met) is { } block)
                 method = method.WithBody(block);
+            else
+                method = method.WithSemicolonToken(GetSemi());
             if (ToParamSyntax(met) is { } pl)
                 method = method.WithParameterList(pl);
             return method;
@@ -227,8 +235,15 @@ namespace Coaster.Roslyn
             return field;
         }
 
-        public static PropertyDeclarationSyntax ToSyntax(this CProperty prop)
+        public static bool IsInterface(this IHasMembers obj)
         {
+            return obj is CInterface;
+        }
+
+        public static PropertyDeclarationSyntax ToSyntax(this CProperty prop, IHasMembers owner)
+        {
+            if (owner.IsInterface()) prop.Visibility = Visibility.None;
+
             var get = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             var set = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
@@ -276,7 +291,7 @@ namespace Coaster.Roslyn
                 CClass c => ToSyntax(c),
                 CField f => ToSyntax(f),
                 CEvent v => ToSyntax(v),
-                CProperty p => ToSyntax(p),
+                CProperty p => ToSyntax(p, owner),
                 CMethod m => ToSyntax(m, owner),
                 _ => throw new InvalidOperationException($"{member} ?!")
             };

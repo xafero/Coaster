@@ -84,6 +84,17 @@ namespace Coaster.Tests
                                         Body = new() { Statements = { "$\"({X}, {Y})\"" }, IsArrow = true }
                                     }
                                 }
+                            },
+                            new CInterface
+                            {
+                                Name = "IPoint",
+                                Members =
+                                {
+                                    new CProperty { Type = "int", Name = "X" },
+                                    new CProperty { Type = "int", Name = "Y" },
+                                    new CProperty { Type = "double", Name = "Distance", Mode = PropMode.Get },
+                                    new CMethod { Name = "SampleMethod" }
+                                }
                             }
                         }
                     }
