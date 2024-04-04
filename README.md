@@ -67,6 +67,7 @@ Of course, it is possible to mix both approaches (parser and writer) to modify C
 ```csharp
 var unit = Coast.Parse("public class SomeClass {}");
 var clazz = unit.Members.Cast<CClass>().Single();
+
 clazz.Members.Add(new CMethod { Name = "Main" });
 
 Console.WriteLine(unit.ToText());
