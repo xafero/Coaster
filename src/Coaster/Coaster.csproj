@@ -23,4 +23,8 @@
     <PackageTags>csharp;csharp-source;coaster</PackageTags>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
 </Project>
