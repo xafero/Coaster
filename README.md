@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/xafero/Coaster/actions/workflows/dotnet.yml/badge.svg)](https://github.com/xafero/Coaster/actions/workflows/dotnet.yml) [![NuGet](https://img.shields.io/nuget/v/Coaster.svg)](https://www.nuget.org/packages/Coaster/)
 
-The project Coaster is a library that allows easy parsing and formatting of C# source files. Coaster introduces a fluent interface to manipulate C# source files, like adding fields, methods, attributes and so on.
+The project Coaster is a library that allows easy parsing and formatting of C# source files. Coaster introduces a nice interface to manipulate C# source files, like adding fields, methods, attributes and so on.
 
 ## Installation
 
@@ -17,6 +17,47 @@ dotnet add package Coaster
 Example:
 ```csharp
 Coast.Parse("public class HelloWorld {}");
+```
+
+### C# Source Code Generation API
+
+Coaster provides a nice API to generate C# classes. Here is an example:
+
+```csharp
+var unit = new CUnit { Usings = { "System.Linq", "System", "System.IO" }, Members =
+    {
+        new CNamespace { Name = "Example", Members =
+            {
+                new CClass { Name = "Person", Members =
+                    {
+                        new CProperty { Type = "int", Name = "Id" },
+                        new CProperty { Type = "string", Name = "FirstName" },
+                        new CProperty { Type = "string", Name = "LastName" }
+                    }
+                }
+            }
+        }
+    }
+};
+Console.WriteLine(unit.ToText());
+```
+
+This will produce:
+
+```csharp
+using System;
+using System.IO;
+using System.Linq;
+
+namespace Example
+{
+    public class Person 
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+}
 ```
 
 ## License
