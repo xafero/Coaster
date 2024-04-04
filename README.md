@@ -10,6 +10,15 @@ The project Coaster is a library that allows easy parsing and formatting of C# s
 dotnet add package Coaster
 ```
 
+## Usage
+
+### C# Parser API
+
+Example:
+```csharp
+Coast.Parse("public class HelloWorld {}");
+```
+
 ## License
 
 Everything is licensed according to [this](./LICENSE).
