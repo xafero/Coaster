@@ -17,7 +17,7 @@ namespace Coaster.Tests
             const string human = "public class MyClass{ private string field;}";
             var code = Coast.Format(human);
 
-            WriteAndCompare(code, $"{nameof(TestFormat)}.txt");
+            WriteAndCompare(code, nameof(TestFormat));
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Coaster.Tests
                 Name = "Main"
             });
 
-            WriteAndCompare(unit, $"{nameof(TestModify)}.txt");
+            WriteAndCompare(unit, nameof(TestModify));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Coaster.Tests
         {
             var unit = new CUnit
             {
-                Usings = { "System.Linq", "System", "System.IO" },
+                Usings = { "System.Linq", "System", "System.Runtime.Serialization", "System.IO" },
                 Members =
                 {
                     new CNamespace
@@ -50,13 +50,14 @@ namespace Coaster.Tests
                             new CClass
                             {
                                 Name = "Person",
-                                Interfaces = { typeof(ISerializable).FullName! },
+                                Interfaces = { typeof(IExtensibleDataObject).FullName! },
                                 Members =
                                 {
                                     new CField { Name = "serialVersionUID", Type = "long" },
                                     new CProperty { Type = "int", Name = "Id" },
                                     new CProperty { Type = "string", Name = "FirstName" },
                                     new CProperty { Type = "string", Name = "LastName" },
+                                    new CProperty { Type = "ExtensionDataObject", Name = "ExtensionData" },
                                     new CMethod { Name = "SetIt" },
                                     new CEvent { Name = "WebOpened" }
                                 }
@@ -86,7 +87,7 @@ namespace Coaster.Tests
                 }
             };
 
-            WriteAndCompare(unit, $"{nameof(TestCreate)}.txt");
+            WriteAndCompare(unit, nameof(TestCreate));
         }
 
         private static void WriteAndCompare(CUnit unit, string name)
@@ -97,6 +98,8 @@ namespace Coaster.Tests
 
         private static void WriteAndCompare(string code, string name)
         {
+            name += ".cs";
+
             WriteText(name, code);
             var exp = ReadText($"res/{name}");
 

@@ -1,15 +1,17 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Example
 {
-    public class Person : System.Runtime.Serialization.ISerializable
+    public class Person : System.Runtime.Serialization.IExtensibleDataObject
     {
         private long serialVersionUID;
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public ExtensionDataObject ExtensionData { get; set; }
 
         public void SetIt()
         {
