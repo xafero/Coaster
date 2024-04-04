@@ -91,7 +91,7 @@ Just run `dotnet pack` to build the sources.
 
 This project uses the syntax tree parsing and writing of:
 
-* https://github.com/dotnet/roslyn[dotnet/roslyn]
+* [dotnet/roslyn](https://github.com/dotnet/roslyn)
 
 ## License
 
