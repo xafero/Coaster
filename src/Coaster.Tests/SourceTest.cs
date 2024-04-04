@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Coaster.Model;
@@ -10,6 +11,20 @@ namespace Coaster.Tests
 {
     public class SourceTest
     {
+        [Fact]
+        public void TestModify()
+        {
+            var unit = Coast.Parse("public class SomeClass {}");
+            var clazz = unit.Members.Cast<CClass>().Single();
+
+            clazz.Members.Add(new CMethod
+            {
+                Name = "Main"
+            });
+
+            WriteAndCompare(unit, $"{nameof(TestModify)}.txt");
+        }
+
         [Fact]
         public void TestCreate()
         {
