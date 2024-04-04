@@ -61,7 +61,10 @@ namespace Coaster.Roslyn
             var rt = SyntaxFactory.ParseTypeName(cla.Type);
             var clas = SyntaxFactory.DelegateDeclaration(rt, cla.Name)
                 .AddModifiers(GetModifiers(cla));
-            clas = clas.WithParameterList(SyntaxFactory.ParameterList());
+            if (ToParamSyntax(cla) is { } pl)
+                clas = clas.WithParameterList(pl);
+            else
+                clas = clas.WithParameterList(SyntaxFactory.ParameterList());
             clas = clas.WithSemicolonToken(GetSemi());
             return clas;
         }

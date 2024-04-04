@@ -32,6 +32,35 @@ namespace Coaster.Tests
         }
 
         [Fact]
+        public void TestArgs()
+        {
+            var unit = new CUnit
+            {
+                Members =
+                {
+                    new CNamespace
+                    {
+                        Name = "Example",
+                        Members =
+                        {
+                            new CDelegate
+                            {
+                                Name = "Callback",
+                                Params =
+                                {
+                                    new CParam { Type = "string", Name = "message" },
+                                    new CParam { Type = "double", Name = "value" }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            WriteAndCompare(unit, nameof(TestArgs));
+        }
+
+        [Fact]
         public void TestCreate()
         {
             var unit = new CUnit
