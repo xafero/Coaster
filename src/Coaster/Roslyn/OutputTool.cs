@@ -38,10 +38,15 @@ namespace Coaster.Roslyn
         {
             var clas = SyntaxFactory.ClassDeclaration(cla.Name)
                 .AddModifiers(GetModifiers(cla))
-                .AddMembers(cla.Members.Select(ToSyntax).ToArray());
+                .AddMembers(ToMemberSyntax(cla));
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
             return clas;
+        }
+
+        public static MemberDeclarationSyntax[] ToMemberSyntax(IHasMembers owner)
+        {
+            return owner.Members.Select(m => ToSyntax2(m, owner)).ToArray();
         }
 
         public static RecordDeclarationSyntax ToSyntax(this CRecord cla)
@@ -90,7 +95,7 @@ namespace Coaster.Roslyn
         {
             var clas = SyntaxFactory.StructDeclaration(cla.Name)
                 .AddModifiers(GetModifiers(cla))
-                .AddMembers(cla.Members.Select(ToSyntax).ToArray());
+                .AddMembers(ToMemberSyntax(cla));
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
             return clas;
@@ -132,6 +137,8 @@ namespace Coaster.Roslyn
                 list.Add(hvv);
             if (obj is IMaybeStatic { IsStatic: true })
                 list.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+            if (obj is IMaybeOverride { IsOverride: true })
+                list.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
             return list.ToArray();
         }
 
@@ -152,18 +159,56 @@ namespace Coaster.Roslyn
             return pas;
         }
 
-        public static MethodDeclarationSyntax ToSyntax(this CMethod met)
+        public static ConstructorDeclarationSyntax ToCtrSyntax(this CMethod met, IHasMembers owner)
         {
-            var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
-                .AddModifiers(GetModifiers(met))
-                .WithBody(ToBlockSyntax(met.Statements));
+            var name = met.Name ?? (owner as IHasName)!.Name;
+            var method = SyntaxFactory.ConstructorDeclaration(name)
+                .AddModifiers(GetModifiers(met));
+            if (ToArrowSyntax(met) is { } arrow)
+                method = method.WithExpressionBody(arrow).WithSemicolonToken(GetSemi());
+            else if (ToBlockSyntax(met) is { } block)
+                method = method.WithBody(block);
             if (ToParamSyntax(met) is { } pl)
                 method = method.WithParameterList(pl);
             return method;
         }
 
-        public static BlockSyntax ToBlockSyntax(IEnumerable<string> statements)
+        public static BaseMethodDeclarationSyntax ToSyntax(this CMethod met, IHasMembers owner)
         {
+            if (met.IsConstructor)
+            {
+                return ToCtrSyntax(met, owner);
+            }
+            var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
+                .AddModifiers(GetModifiers(met));
+            if (ToArrowSyntax(met) is { } arrow)
+                method = method.WithExpressionBody(arrow).WithSemicolonToken(GetSemi());
+            else if (ToBlockSyntax(met) is { } block)
+                method = method.WithBody(block);
+            if (ToParamSyntax(met) is { } pl)
+                method = method.WithParameterList(pl);
+            return method;
+        }
+
+        public static ArrowExpressionClauseSyntax ToArrowSyntax(this IHasBody owner)
+        {
+            if (owner?.Body is not { IsArrow: true })
+            {
+                return null;
+            }
+            var statements = owner.Body.Statements;
+            var single = SyntaxFactory.ParseExpression(statements.Single());
+            var arrow = SyntaxFactory.ArrowExpressionClause(single);
+            return arrow;
+        }
+
+        public static BlockSyntax ToBlockSyntax(this IHasBody owner)
+        {
+            if (owner?.Body == null || owner.Body.IsArrow)
+            {
+                return null;
+            }
+            var statements = owner.Body.Statements;
             var lines = statements.Select(s =>
             {
                 var text = s.EndsWith(";") ? s : $"{s};";
@@ -188,9 +233,14 @@ namespace Coaster.Roslyn
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             var set = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
-            var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(prop.Type), prop.Name)
+            var ala = new List<AccessorDeclarationSyntax>();
+            if (prop.Mode is PropMode.Get or PropMode.GetSet) ala.Add(get);
+            if (prop.Mode is PropMode.Set or PropMode.GetSet) ala.Add(set);
+
+            var pt = SyntaxFactory.ParseTypeName(prop.Type);
+            var property = SyntaxFactory.PropertyDeclaration(pt, prop.Name)
                 .AddModifiers(GetModifiers(prop))
-                .AddAccessorListAccessors(get, set);
+                .AddAccessorListAccessors(ala.ToArray());
             return property;
         }
 
@@ -200,7 +250,7 @@ namespace Coaster.Roslyn
             var usings = nsp.Usings.Select(ToUsing).ToArray();
             var space = SyntaxFactory.NamespaceDeclaration(name)
                 .AddUsings(usings)
-                .AddMembers(nsp.Members.Select(ToSyntax).ToArray());
+                .AddMembers(ToMemberSyntax(nsp));
             return space;
         }
 
@@ -209,11 +259,11 @@ namespace Coaster.Roslyn
             var usings = nsp.Usings.Select(ToUsing).ToArray();
             var space = SyntaxFactory.CompilationUnit()
                 .AddUsings(usings)
-                .AddMembers(nsp.Members.Select(ToSyntax).ToArray());
+                .AddMembers(ToMemberSyntax(nsp));
             return space;
         }
 
-        public static MemberDeclarationSyntax ToSyntax(this CMember member)
+        public static MemberDeclarationSyntax ToSyntax2(this CMember member, IHasMembers owner)
         {
             return member switch
             {
@@ -227,7 +277,7 @@ namespace Coaster.Roslyn
                 CField f => ToSyntax(f),
                 CEvent v => ToSyntax(v),
                 CProperty p => ToSyntax(p),
-                CMethod m => ToSyntax(m),
+                CMethod m => ToSyntax(m, owner),
                 _ => throw new InvalidOperationException($"{member} ?!")
             };
         }

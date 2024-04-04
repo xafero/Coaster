@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Runtime.Serialization;
+using Coaster.API;
 using Coaster.Model;
 using Xunit;
 using static Coaster.Tests.TestUtil;
@@ -59,6 +60,29 @@ namespace Coaster.Tests
                                 {
                                     new CParam { Type = "string", Name = "FirstName" },
                                     new CParam { Type = "string", Name = "LastName" }
+                                }
+                            },
+                            new CStruct
+                            {
+                                Name = "Coords",
+                                Members =
+                                {
+                                    new CMethod
+                                    {
+                                        Params =
+                                        {
+                                            new CParam { Type = "double", Name = "x" },
+                                            new CParam { Type = "double", Name = "y" }
+                                        },
+                                        Body = new() { Statements = { "X = x", "Y = y" } }, IsConstructor = true
+                                    },
+                                    new CProperty { Type = "double", Name = "X", Mode = PropMode.Get },
+                                    new CProperty { Type = "double", Name = "Y", Mode = PropMode.Get },
+                                    new CMethod
+                                    {
+                                        Name = "ToString", Type = "string", IsOverride = true,
+                                        Body = new() { Statements = { "$\"({X}, {Y})\"" }, IsArrow = true }
+                                    }
                                 }
                             }
                         }
@@ -142,7 +166,7 @@ namespace Coaster.Tests
                             {
                                 Name = "Main", IsStatic = true,
                                 Params = { new CParam { Type = "string[]", Name = "args" } },
-                                Statements = { "Console.WriteLine(args.Length)" }
+                                Body = new() { Statements = { "Console.WriteLine(args.Length)" } }
                             }
                         }
                     }

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Coaster.API;
 
 namespace Coaster.Model
 {
-    public sealed class CUnit
+    public sealed class CUnit : IHasMembers
     {
         public ISet<string> Usings { get; set; } = new SortedSet<string>();
 

@@ -3,7 +3,7 @@ using Coaster.API;
 
 namespace Coaster.Model
 {
-    public sealed class CStruct : CMember, IHasInterfaces, IHasVisibility
+    public sealed class CStruct : CMember, IHasInterfaces, IHasVisibility, IHasMembers
     {
         public ISet<string> Interfaces { get; set; } = new HashSet<string>();
 

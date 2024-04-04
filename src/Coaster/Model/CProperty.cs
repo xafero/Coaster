@@ -7,5 +7,7 @@ namespace Coaster.Model
         public string Type { get; set; }
 
         public Visibility Visibility { get; set; } = Visibility.Public;
+
+        public PropMode Mode { get; set; } = PropMode.GetSet;
     }
 }
