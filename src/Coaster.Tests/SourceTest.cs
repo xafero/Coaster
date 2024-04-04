@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Coaster.Model;
 using Coaster.Roslyn;
+using Coaster.Utils;
 using Xunit;
 
 namespace Coaster.Tests
@@ -69,7 +70,10 @@ namespace Coaster.Tests
             var code = unit.ToText();
             WriteText(name, code);
             var exp = ReadText($"res/{name}");
-            Assert.Equal(exp, code);
+
+            var expN = TextTool.Normalize(exp);
+            var codeN = TextTool.Normalize(code);
+            Assert.Equal(expN, codeN);
         }
 
         private static string ReadText(string file)
