@@ -40,7 +40,7 @@ namespace Coaster.Tests
                 {
                     new CNamespace
                     {
-                        Name = "Example",
+                        Name = "Sample",
                         Members =
                         {
                             new CDelegate
@@ -50,6 +50,15 @@ namespace Coaster.Tests
                                 {
                                     new CParam { Type = "string", Name = "message" },
                                     new CParam { Type = "double", Name = "value" }
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "Person",
+                                Params =
+                                {
+                                    new CParam { Type = "string", Name = "FirstName" },
+                                    new CParam { Type = "string", Name = "LastName" }
                                 }
                             }
                         }

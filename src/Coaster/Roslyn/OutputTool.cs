@@ -51,7 +51,10 @@ namespace Coaster.Roslyn
                 .AddModifiers(GetModifiers(cla));
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
-            clas = clas.WithParameterList(SyntaxFactory.ParameterList());
+            if (ToParamSyntax(cla) is { } pl)
+                clas = clas.WithParameterList(pl);
+            else
+                clas = clas.WithParameterList(SyntaxFactory.ParameterList());
             clas = clas.WithSemicolonToken(GetSemi());
             return clas;
         }
