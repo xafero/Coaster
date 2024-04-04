@@ -8,10 +8,16 @@ namespace Coaster
 {
     public static class Coast
     {
-        public static CUnit Parse(string code)
+        internal static CompilationUnitSyntax ParseUnit(string code)
         {
             var syntax = InputTool.Parse(code);
             var root = syntax.GetCompilationUnitRoot();
+            return root;
+        }
+
+        public static CUnit Parse(string code)
+        {
+            var root = ParseUnit(code);
             var unit = Go(root);
             return unit;
         }
@@ -35,7 +41,7 @@ namespace Coaster
 
         public static string Format(string code)
         {
-            var unit = Parse(code);
+            var unit = ParseUnit(code);
             var formatted = unit.ToText();
             return formatted;
         }
