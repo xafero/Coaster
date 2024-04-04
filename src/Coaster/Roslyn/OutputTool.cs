@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Coaster.API;
+using Coaster.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -174,6 +176,12 @@ namespace Coaster.Roslyn
         {
             var name = ToName(text);
             return SyntaxFactory.UsingDirective(name);
+        }
+
+        public static string ToText(this CUnit unit)
+        {
+            var syntax = unit.ToSyntax();
+            return syntax.ToText();
         }
     }
 }

@@ -1,16 +1,10 @@
-﻿using System;
-using System.Runtime.Serialization;
-using Coaster;
-using Coaster.Roslyn;
-
-namespace Funny
+﻿namespace Funny
 {
     internal static class Program
     {
         private static void Main(string[] args)
         {
             Modify();
-            Create();
         }
 
         private static void Modify()
@@ -27,60 +21,6 @@ namespace Funny
 
             Console.WriteLine(javaClass);
             */
-        }
-
-        private static void Create()
-        {
-            var nsp = new CUnit
-            {
-                Usings = { "System.Linq", "System", "System.IO" },
-                Members =
-                {
-                    new CNamespace
-                    {
-                        Name = "Example",
-                        Members =
-                        {
-                            new CClass
-                            {
-                                Name = "Person",
-                                Interfaces = { typeof(ISerializable).FullName! },
-                                Members =
-                                {
-                                    new CField { Name = "serialVersionUID", Type = "long" },
-                                    new CProperty { Type = "int", Name = "Id" },
-                                    new CProperty { Type = "string", Name = "FirstName" },
-                                    new CProperty { Type = "string", Name = "LastName" },
-                                    new CMethod { Name = "SetIt" },
-                                    new CEvent { Name = "WebOpened" }
-                                }
-                            },
-                            new CEnum
-                            {
-                                Name = "Funny"
-                            },
-                            new CInterface
-                            {
-                                Name = "IConductor"
-                            },
-                            new CStruct
-                            {
-                                Name = "Half"
-                            },
-                            new CRecord
-                            {
-                                Name = "DailyTemperature"
-                            },
-                            new CDelegate
-                            {
-                                Name = "EventHandler"
-                            }
-                        }
-                    }
-                }
-            };
-
-            Console.WriteLine(nsp.ToSyntax().ToText());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Coaster
+namespace Coaster.Model
 {
     public sealed class CNamespace : CMember
     {

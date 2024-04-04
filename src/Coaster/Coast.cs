@@ -1,4 +1,4 @@
-﻿namespace Coaster.Impl
+﻿namespace Coaster
 {
     public static class Coast
     {

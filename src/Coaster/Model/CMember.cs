@@ -1,4 +1,4 @@
-﻿namespace Coaster
+﻿namespace Coaster.Model
 {
     public abstract class CMember
     {

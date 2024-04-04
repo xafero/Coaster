@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Coaster.API;
 
-namespace Coaster
+namespace Coaster.Model
 {
     public sealed class CStruct : CMember, IHasInterfaces
     {
