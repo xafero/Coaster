@@ -82,6 +82,16 @@ var formattedCode = Coast.Format(humanCode);
 Console.WriteLine(formattedCode);
 ```
 
+## Building from sources
+
+Just run `dotnet pack` to build the sources.
+
+## Background info
+
+This project uses the syntax tree parsing and writing of:
+
+* https://github.com/dotnet/roslyn[dotnet/roslyn]
+
 ## License
 
 Everything is licensed according to [this](./LICENSE).
