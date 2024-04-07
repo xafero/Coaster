@@ -11,5 +11,10 @@
         {
             return string.IsNullOrWhiteSpace(text) ? null : text;
         }
+
+        public static string Quote(this string text)
+        {
+            return text.StartsWith("\"") ? text : $"\"{text}\"";
+        }
     }
 }

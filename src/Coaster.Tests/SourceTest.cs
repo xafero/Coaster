@@ -4,6 +4,7 @@ using Coaster.API.Mod;
 using Coaster.Model.Part;
 using Coaster.Model.Top;
 using Coaster.Model.Tree;
+using Coaster.Utils;
 using Xunit;
 using static Coaster.Tests.TestUtil;
 
@@ -260,6 +261,43 @@ namespace Coaster.Tests
                                 {
                                     new CParam { Type = "string", Name = "Description" },
                                     new CParam { Type = "bool", Name = "IsDone" }
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "ToDoTwo", Params =
+                                {
+                                    new CParam { Type = "string", Name = "Description" },
+                                    new CParam { Type = "bool", Name = "IsDone" }
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "ToDoDef", Params =
+                                {
+                                    new CParam { Type = "string", Name = "Description" },
+                                    new CParam { Type = "bool", Name = "IsDone" },
+                                    new CParam { Type = "string", Name = "Category", Value = "Default".Quote() }
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "ToDo", Params =
+                                {
+                                    new CParam { Type = "string", Name = "Description" }
+                                },
+                                Members =
+                                {
+                                    new CConstructor
+                                    {
+                                        Params =
+                                        {
+                                            new CParam { Type = "string", Name = "description" },
+                                            new CParam { Type = "bool", Name = "isDone" }
+                                        },
+                                        Body = new CBody { Statements = { "IsDone = isDone" } }
+                                    },
+                                    new CProperty { Type = "bool", Name = "IsDone" }
                                 }
                             }
                         }

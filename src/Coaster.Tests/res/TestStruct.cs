@@ -49,4 +49,15 @@ namespace Sample
     }
 
     public readonly record struct ToDoStruct(string Description, bool IsDone);
+    public record ToDoTwo(string Description, bool IsDone);
+    public record ToDoDef(string Description, bool IsDone, string Category = "Default");
+    public record ToDo(string Description)
+    {
+        public ToDo(string description, bool isDone) : this(description)
+        {
+            IsDone = isDone;
+        }
+
+        public bool IsDone { get; init; }
+    }
 }

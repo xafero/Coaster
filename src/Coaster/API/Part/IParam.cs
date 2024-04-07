@@ -1,6 +1,6 @@
 ﻿namespace Coaster.API.Part
 {
-    public interface IParam : INamed, ITyped
+    public interface IParam : INamed, ITyped, IValued
     {
     }
 }

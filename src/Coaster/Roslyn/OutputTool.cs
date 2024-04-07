@@ -234,6 +234,11 @@ namespace Coaster.Roslyn
             var ipn = SyntaxFactory.Identifier(par.Name);
             var prm = SyntaxFactory.Parameter(ipn)
                 .WithType(SyntaxFactory.ParseTypeName(par.Type));
+            if (par.Value.NullIfEmpty() is { } paramVal)
+            {
+                var defaultExpr = SyntaxFactory.ParseExpression(paramVal);
+                prm = prm.WithDefault(SyntaxFactory.EqualsValueClause(defaultExpr));
+            }
             return prm;
         }
 
