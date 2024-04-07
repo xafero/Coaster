@@ -35,4 +35,16 @@ namespace Sample
     {
         public int Id { get; init; }
     }
+
+    record PersonCustom
+    {
+        public PersonCustom(string firstName, string lastName)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
+        public string FirstName { get; }
+        public string LastName { get; }
+    }
 }

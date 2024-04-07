@@ -232,6 +232,26 @@ namespace Coaster.Tests
                                 {
                                     new CProperty { Name = "Id", Type = "int" }
                                 }
+                            },
+                            new CRecord
+                            {
+                                Name = "PersonCustom", Visibility = Visibility.None, Members =
+                                {
+                                    new CConstructor
+                                    {
+                                        Params =
+                                        {
+                                            new CParam { Type = "string", Name = "firstName" },
+                                            new CParam { Type = "string", Name = "lastName" }
+                                        },
+                                        Body = new CBody
+                                        {
+                                            Statements = { "FirstName = firstName", "LastName = lastName" }
+                                        }
+                                    },
+                                    new CProperty { Name = "FirstName", Type = "string", Mode = PropMode.Get },
+                                    new CProperty { Name = "LastName", Type = "string", Mode = PropMode.Get }
+                                }
                             }
                         }
                     }
