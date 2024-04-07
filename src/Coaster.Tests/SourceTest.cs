@@ -204,8 +204,8 @@ namespace Coaster.Tests
                                 Name = "PersonMut", Mode = RecMode.Class,
                                 Members =
                                 {
-                                    new CProperty { Name = "FirstName", Type = "string" },
-                                    new CProperty { Name = "LastName", Type = "string" },
+                                    new CProperty { Name = "FirstName", Type = "string", Mode = PropMode.GetSet },
+                                    new CProperty { Name = "LastName", Type = "string", Mode = PropMode.GetSet }
                                 }
                             },
                             new CRecord
@@ -213,7 +213,7 @@ namespace Coaster.Tests
                                 Name = "StudentMut", Inherit = Inherit.Sealed, Base = "PersonMut",
                                 Members =
                                 {
-                                    new CProperty { Name = "Id", Type = "int" }
+                                    new CProperty { Name = "Id", Type = "int", Mode = PropMode.GetSet }
                                 }
                             },
                             new CRecord
@@ -221,8 +221,8 @@ namespace Coaster.Tests
                                 Name = "PersonImm", Mode = RecMode.Class,
                                 Members =
                                 {
-                                    new CProperty { Name = "FirstName", Type = "string", Mode = PropMode.GetInit },
-                                    new CProperty { Name = "LastName", Type = "string", Mode = PropMode.GetInit },
+                                    new CProperty { Name = "FirstName", Type = "string" },
+                                    new CProperty { Name = "LastName", Type = "string" }
                                 }
                             },
                             new CRecord
@@ -230,7 +230,7 @@ namespace Coaster.Tests
                                 Name = "StudentImm", Inherit = Inherit.Sealed, Base = "PersonImm",
                                 Members =
                                 {
-                                    new CProperty { Name = "Id", Type = "int", Mode = PropMode.GetInit }
+                                    new CProperty { Name = "Id", Type = "int" }
                                 }
                             }
                         }

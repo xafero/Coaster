@@ -26,7 +26,8 @@ namespace Coaster.Demo
                                     new CConstructor
                                     {
                                         Body = new CArrow { Expression = "Console.WriteLine(\"Hello!\")" }
-                                    }
+                                    },
+                                    new CProperty { Name = "Count", Type = "int?" }
                                 }
                             }
                         }

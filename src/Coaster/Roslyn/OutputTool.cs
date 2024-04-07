@@ -324,6 +324,11 @@ namespace Coaster.Roslyn
             return obj is IInterface;
         }
 
+        public static bool IsRecord(this IHasMembers obj)
+        {
+            return obj is IRecord;
+        }
+
         public static List<AccessorDeclarationSyntax> ToAccessSyntax(this IProperty prop)
         {
             var get = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)

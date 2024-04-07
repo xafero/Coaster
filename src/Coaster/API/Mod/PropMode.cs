@@ -2,7 +2,9 @@
 {
     public enum PropMode
     {
-        GetSet = 0,
+        None = 0,
+
+        GetSet,
 
         GetInit,
 

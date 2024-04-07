@@ -1,6 +1,7 @@
 ﻿using Coaster.API.Mod;
 using Coaster.API.Part;
 using Coaster.Roslyn;
+using Coaster.Utils;
 
 namespace Coaster.Model.Part
 {
@@ -12,15 +13,17 @@ namespace Coaster.Model.Part
 
         public Visibility Visibility { get; set; }
 
-        public PropMode Mode { get; set; } = PropMode.GetSet;
+        public PropMode Mode { get; set; }
 
         public void Apply(IHasMembers owner)
         {
             if (owner.IsInterface())
             {
+                Mode = Mode.IfZero(PropMode.GetSet);
                 return;
             }
-            Visibility = Visibility.Public;
+            Mode = Mode.IfZero(owner.IsRecord() ? PropMode.GetInit : PropMode.GetSet);
+            Visibility = Visibility.IfZero(Visibility.Public);
         }
     }
 }
