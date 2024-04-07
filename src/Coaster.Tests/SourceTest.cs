@@ -252,6 +252,15 @@ namespace Coaster.Tests
                                     new CProperty { Name = "FirstName", Type = "string", Mode = PropMode.Get },
                                     new CProperty { Name = "LastName", Type = "string", Mode = PropMode.Get }
                                 }
+                            },
+                            new CRecord
+                            {
+                                Name = "ToDoStruct", Mode = RecMode.Struct, Modifier = Modifier.Readonly,
+                                Params =
+                                {
+                                    new CParam { Type = "string", Name = "Description" },
+                                    new CParam { Type = "bool", Name = "IsDone" }
+                                }
                             }
                         }
                     }

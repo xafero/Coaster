@@ -22,5 +22,7 @@ namespace Coaster.Model.Top
         public RecMode Mode { get; set; }
 
         public IList<IMember> Members { get; } = new List<IMember>();
+
+        public Modifier Modifier { get; set; }
     }
 }

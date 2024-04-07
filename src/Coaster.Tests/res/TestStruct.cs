@@ -47,4 +47,6 @@ namespace Sample
         public string FirstName { get; }
         public string LastName { get; }
     }
+
+    public readonly record struct ToDoStruct(string Description, bool IsDone);
 }
