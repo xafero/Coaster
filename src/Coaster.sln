@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coaster.Tests", "Coaster.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coaster", "Coaster\Coaster.csproj", "{F1F8DF9A-8604-4FF9-A6BA-928CC85AD3AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coaster.Demo", "Coaster.Demo\Coaster.Demo.csproj", "{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{F1F8DF9A-8604-4FF9-A6BA-928CC85AD3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1F8DF9A-8604-4FF9-A6BA-928CC85AD3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1F8DF9A-8604-4FF9-A6BA-928CC85AD3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

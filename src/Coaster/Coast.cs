@@ -1,4 +1,5 @@
 ﻿using System;
+using Coaster.API.Top;
 using Coaster.Model;
 using Coaster.Roslyn;
 using Microsoft.CodeAnalysis.CSharp;
@@ -30,7 +31,7 @@ namespace Coaster
             return unit;
         }
 
-        private static CMember Go(MemberDeclarationSyntax syntax)
+        private static IMember Go(MemberDeclarationSyntax syntax)
         {
             return syntax switch
             {

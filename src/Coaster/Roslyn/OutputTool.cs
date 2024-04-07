@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Coaster.API;
-using Coaster.Model;
+using Coaster.API.Top;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -34,7 +34,7 @@ namespace Coaster.Roslyn
             return bases.Length == 0 ? null : bases;
         }
 
-        public static ClassDeclarationSyntax ToSyntax(this CClass cla)
+        public static ClassDeclarationSyntax ToSyntax(this IClass cla)
         {
             var clas = SyntaxFactory.ClassDeclaration(cla.Name)
                 .AddModifiers(GetModifiers(cla))
@@ -49,7 +49,7 @@ namespace Coaster.Roslyn
             return owner.Members.Select(m => ToSyntax(m, owner)).ToArray();
         }
 
-        public static RecordDeclarationSyntax ToSyntax(this CRecord cla)
+        public static RecordDeclarationSyntax ToSyntax(this IRecord cla)
         {
             var rec = SyntaxFactory.Token(SyntaxKind.RecordKeyword);
             var clas = SyntaxFactory.RecordDeclaration(rec, cla.Name)
@@ -64,7 +64,7 @@ namespace Coaster.Roslyn
             return clas;
         }
 
-        public static DelegateDeclarationSyntax ToSyntax(this CDelegate cla)
+        public static DelegateDeclarationSyntax ToSyntax(this IDelegate cla)
         {
             var rt = SyntaxFactory.ParseTypeName(cla.Type);
             var clas = SyntaxFactory.DelegateDeclaration(rt, cla.Name)
@@ -77,7 +77,7 @@ namespace Coaster.Roslyn
             return clas;
         }
 
-        public static EventDeclarationSyntax ToSyntax(this CEvent cla)
+        public static EventDeclarationSyntax ToSyntax(this IEvent cla)
         {
             var rt = SyntaxFactory.ParseTypeName(cla.Type);
             var clas = SyntaxFactory.EventDeclaration(rt, cla.Name)
@@ -91,7 +91,7 @@ namespace Coaster.Roslyn
             return SyntaxFactory.Token(SyntaxKind.SemicolonToken);
         }
 
-        public static StructDeclarationSyntax ToSyntax(this CStruct cla)
+        public static StructDeclarationSyntax ToSyntax(this IStruct cla)
         {
             var clas = SyntaxFactory.StructDeclaration(cla.Name)
                 .AddModifiers(GetModifiers(cla))
@@ -111,7 +111,7 @@ namespace Coaster.Roslyn
             return SyntaxFactory.BaseList(ToSepBaseTypes(types));
         }
 
-        public static EnumDeclarationSyntax ToSyntax(this CEnum enu)
+        public static EnumDeclarationSyntax ToSyntax(this IEnum enu)
         {
             var ed = SyntaxFactory.EnumDeclaration(enu.Name)
                 .AddModifiers(GetModifiers(enu))
@@ -121,7 +121,7 @@ namespace Coaster.Roslyn
             return ed;
         }
 
-        public static SeparatedSyntaxList<EnumMemberDeclarationSyntax> ToSyntax(IList<CEnumVal> values)
+        public static SeparatedSyntaxList<EnumMemberDeclarationSyntax> ToSyntax(IList<IEnumVal> values)
         {
             var items = values.Select(v =>
             {
@@ -137,7 +137,7 @@ namespace Coaster.Roslyn
             return list;
         }
 
-        public static InterfaceDeclarationSyntax ToSyntax(this CInterface cla)
+        public static InterfaceDeclarationSyntax ToSyntax(this IInterface cla)
         {
             var clas = SyntaxFactory.InterfaceDeclaration(cla.Name)
                 .AddModifiers(GetModifiers(cla))
@@ -160,19 +160,37 @@ namespace Coaster.Roslyn
             }
         }
 
+        public static SyntaxToken? ToSyntax(this Inherit inh)
+        {
+            switch (inh)
+            {
+                case Inherit.None: return null;
+                case Inherit.Virtual: return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
+                case Inherit.Override: return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+                case Inherit.Abstract: return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
+                case Inherit.Sealed: return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
+                default: throw new ArgumentOutOfRangeException(nameof(inh), inh, null);
+            }
+        }
+
         public static SyntaxToken[] GetModifiers(object obj)
         {
             var list = new List<SyntaxToken>();
-            if (obj is IHasVisibility hv && ToSyntax(hv.Visibility) is { } hvv)
+            if (obj is IVisible hv && ToSyntax(hv.Visibility) is { } hvv)
                 list.Add(hvv);
-            if (obj is IMaybeStatic { IsStatic: true })
-                list.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
-            if (obj is IMaybeOverride { IsOverride: true })
-                list.Add(SyntaxFactory.Token(SyntaxKind.OverrideKeyword));
+            if (obj is IModified im)
+            {
+                if (im.Modifier.HasFlag(Modifier.Static))
+                    list.Add(SyntaxFactory.Token(SyntaxKind.StaticKeyword));
+                if (im.Modifier.HasFlag(Modifier.Readonly))
+                    list.Add(SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword));
+            }
+            if (obj is IInherited ih && ToSyntax(ih.Inherit) is { } ihv)
+                list.Add(ihv);
             return list.ToArray();
         }
 
-        public static ParameterSyntax ToSyntax(this CParam par)
+        public static ParameterSyntax ToSyntax(this IParam par)
         {
             var ipn = SyntaxFactory.Identifier(par.Name);
             var prm = SyntaxFactory.Parameter(ipn)
@@ -189,9 +207,9 @@ namespace Coaster.Roslyn
             return pas;
         }
 
-        public static ConstructorDeclarationSyntax ToCtrSyntax(this CMethod met, IHasMembers owner)
+        public static ConstructorDeclarationSyntax ToSyntax(this IConstructor met, IHasMembers owner)
         {
-            var name = met.Name ?? (owner as IHasName)!.Name;
+            var name = (owner as INamed)!.Name;
             var method = SyntaxFactory.ConstructorDeclaration(name)
                 .AddModifiers(GetModifiers(met));
             if (ToArrowSyntax(met) is { } arrow)
@@ -203,17 +221,10 @@ namespace Coaster.Roslyn
             return method;
         }
 
-        public static BaseMethodDeclarationSyntax ToSyntax(this CMethod met, IHasMembers owner)
+        public static MethodDeclarationSyntax ToSyntax(this IMethod met, IHasMembers owner)
         {
-            if (met.IsConstructor)
-            {
-                return ToCtrSyntax(met, owner);
-            }
-            if (owner.IsInterface())
-            {
-                met.Body = null;
-                met.Visibility = Visibility.None;
-            }
+            met.Apply(owner);
+
             var method = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(met.Type), met.Name)
                 .AddModifiers(GetModifiers(met));
             if (ToArrowSyntax(met) is { } arrow)
@@ -227,9 +238,14 @@ namespace Coaster.Roslyn
             return method;
         }
 
+        public static bool IsArrow(this IBody body)
+        {
+            return body is IArrow;
+        }
+
         public static ArrowExpressionClauseSyntax ToArrowSyntax(this IHasBody owner)
         {
-            if (owner?.Body is not { IsArrow: true })
+            if (owner?.Body == null || !owner.Body.IsArrow())
             {
                 return null;
             }
@@ -241,7 +257,7 @@ namespace Coaster.Roslyn
 
         public static BlockSyntax ToBlockSyntax(this IHasBody owner)
         {
-            if (owner?.Body == null || owner.Body.IsArrow)
+            if (owner?.Body == null || owner.Body.IsArrow())
             {
                 return null;
             }
@@ -255,7 +271,7 @@ namespace Coaster.Roslyn
             return block;
         }
 
-        public static FieldDeclarationSyntax ToSyntax(this CField fld)
+        public static FieldDeclarationSyntax ToSyntax(this IField fld)
         {
             var variable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName(fld.Type))
                 .AddVariables(SyntaxFactory.VariableDeclarator(fld.Name));
@@ -266,12 +282,12 @@ namespace Coaster.Roslyn
 
         public static bool IsInterface(this IHasMembers obj)
         {
-            return obj is CInterface;
+            return obj is IInterface;
         }
 
-        public static PropertyDeclarationSyntax ToSyntax(this CProperty prop, IHasMembers owner)
+        public static PropertyDeclarationSyntax ToSyntax(this IProperty prop, IHasMembers owner)
         {
-            if (owner.IsInterface()) prop.Visibility = Visibility.None;
+            prop.Apply(owner);
 
             var get = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -288,7 +304,7 @@ namespace Coaster.Roslyn
             return property;
         }
 
-        public static NamespaceDeclarationSyntax ToSyntax(this CNamespace nsp)
+        public static NamespaceDeclarationSyntax ToSyntax(this INamespace nsp)
         {
             var name = ToName(nsp.Name);
             var usings = nsp.Usings.Select(ToUsing).ToArray();
@@ -298,7 +314,7 @@ namespace Coaster.Roslyn
             return space;
         }
 
-        public static CompilationUnitSyntax ToSyntax(this CUnit nsp)
+        public static CompilationUnitSyntax ToSyntax(this IUnit nsp)
         {
             var usings = nsp.Usings.Select(ToUsing).ToArray();
             var space = SyntaxFactory.CompilationUnit()
@@ -307,21 +323,22 @@ namespace Coaster.Roslyn
             return space;
         }
 
-        public static MemberDeclarationSyntax ToSyntax(this CMember member, IHasMembers owner)
+        public static MemberDeclarationSyntax ToSyntax(this IMember member, IHasMembers owner)
         {
             return member switch
             {
-                CEnum e => ToSyntax(e),
-                CStruct s => ToSyntax(s),
-                CRecord r => ToSyntax(r),
-                CDelegate d => ToSyntax(d),
-                CInterface i => ToSyntax(i),
-                CNamespace n => ToSyntax(n),
-                CClass c => ToSyntax(c),
-                CField f => ToSyntax(f),
-                CEvent v => ToSyntax(v),
-                CProperty p => ToSyntax(p, owner),
-                CMethod m => ToSyntax(m, owner),
+                IEnum e => ToSyntax(e),
+                IStruct s => ToSyntax(s),
+                IRecord r => ToSyntax(r),
+                IDelegate d => ToSyntax(d),
+                IInterface i => ToSyntax(i),
+                INamespace n => ToSyntax(n),
+                IClass c => ToSyntax(c),
+                IField f => ToSyntax(f),
+                IEvent v => ToSyntax(v),
+                IProperty p => ToSyntax(p, owner),
+                IConstructor o => ToSyntax(o, owner),
+                IMethod m => ToSyntax(m, owner),
                 _ => throw new InvalidOperationException($"{member} ?!")
             };
         }
@@ -332,7 +349,7 @@ namespace Coaster.Roslyn
             return SyntaxFactory.UsingDirective(name);
         }
 
-        public static string ToText(this CUnit unit)
+        public static string ToText(this IUnit unit)
         {
             var syntax = unit.ToSyntax();
             return syntax.ToText();
