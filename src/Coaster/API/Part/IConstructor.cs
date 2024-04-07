@@ -3,7 +3,7 @@ using Coaster.API.Tree;
 
 namespace Coaster.API.Part
 {
-    public interface IConstructor : IVisible, IHasParameters, IHasBody, IMember
+    public interface IConstructor : IVisible, IHasParameters, IHasBody, IMember, IHasInitializer
     {
     }
 }

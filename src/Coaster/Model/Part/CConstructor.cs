@@ -12,5 +12,7 @@ namespace Coaster.Model.Part
         public IList<IParam> Params { get; } = new List<IParam>();
 
         public IBody Body { get; set; }
+
+        public IInitializer Init { get; set; }
     }
 }

@@ -295,6 +295,7 @@ namespace Coaster.Tests
                                             new CParam { Type = "string", Name = "description" },
                                             new CParam { Type = "bool", Name = "isDone" }
                                         },
+                                        Init = new CInit { IsThis = true, Args = { "description" } },
                                         Body = new CBody { Statements = { "IsDone = isDone" } }
                                     },
                                     new CProperty { Type = "bool", Name = "IsDone" }

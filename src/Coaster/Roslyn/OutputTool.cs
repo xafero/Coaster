@@ -251,6 +251,21 @@ namespace Coaster.Roslyn
             return pas;
         }
 
+        public static ArgumentListSyntax ToArgSyntax(this IEnumerable<string> args)
+        {
+            var list = SyntaxFactory.ParseArgumentList($"({string.Join(", ", args)})");
+            return list;
+        }
+
+        public static ConstructorInitializerSyntax ToSyntax(this IInitializer ini)
+        {
+            var kind = ini.IsThis ? SyntaxKind.ThisConstructorInitializer : SyntaxKind.BaseConstructorInitializer;
+            var init = SyntaxFactory.ConstructorInitializer(kind);
+            if (ini.Args is { Count: >= 1 })
+                init = init.WithArgumentList(ToArgSyntax(ini.Args));
+            return init;
+        }
+
         public static ConstructorDeclarationSyntax ToSyntax(this IConstructor met, IHasMembers owner)
         {
             var name = (owner as INamed)!.Name;
@@ -262,6 +277,8 @@ namespace Coaster.Roslyn
                 method = method.WithBody(block);
             if (ToParamSyntax(met) is { } pl)
                 method = method.WithParameterList(pl);
+            if (met.Init is { } init)
+                method = method.WithInitializer(init.ToSyntax());
             return method;
         }
 
