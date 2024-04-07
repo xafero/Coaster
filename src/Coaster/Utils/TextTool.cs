@@ -6,5 +6,10 @@
         {
             return text.Replace("\r\n", "\n");
         }
+
+        public static string NullIfEmpty(this string text)
+        {
+            return string.IsNullOrWhiteSpace(text) ? null : text;
+        }
     }
 }

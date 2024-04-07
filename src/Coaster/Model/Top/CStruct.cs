@@ -14,5 +14,9 @@ namespace Coaster.Model.Top
         public ISet<string> Interfaces { get; } = new SortedSet<string>();
 
         public Visibility Visibility { get; set; } = Visibility.Public;
+
+        public Inherit Inherit { get; set; }
+
+        public Modifier Modifier { get; set; }
     }
 }

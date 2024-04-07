@@ -174,6 +174,74 @@ namespace Coaster.Tests
         }
 
         [Fact]
+        public void TestStruct()
+        {
+            var unit = new CUnit
+            {
+                Usings = { "System", "System.Collections.Generic", "System.Text" },
+                Members =
+                {
+                    new CNamespace
+                    {
+                        Name = "Sample",
+                        Members =
+                        {
+                            new CStruct
+                            {
+                                Name = "Marvel", Modifier = Modifier.Readonly,
+                                Members =
+                                {
+                                    new CProperty { Name = "CharacterName", Type = "string", Mode = PropMode.Get },
+                                    new CConstructor
+                                    {
+                                        Params = { new CParam { Name = "name", Type = "string" } },
+                                        Body = new CBody { Statements = { "CharacterName = name" } }
+                                    }
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "PersonMut", Mode = RecMode.Class,
+                                Members =
+                                {
+                                    new CProperty { Name = "FirstName", Type = "string" },
+                                    new CProperty { Name = "LastName", Type = "string" },
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "StudentMut", Inherit = Inherit.Sealed, Base = "PersonMut",
+                                Members =
+                                {
+                                    new CProperty { Name = "Id", Type = "int" }
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "PersonImm", Mode = RecMode.Class,
+                                Members =
+                                {
+                                    new CProperty { Name = "FirstName", Type = "string", Mode = PropMode.GetInit },
+                                    new CProperty { Name = "LastName", Type = "string", Mode = PropMode.GetInit },
+                                }
+                            },
+                            new CRecord
+                            {
+                                Name = "StudentImm", Inherit = Inherit.Sealed, Base = "PersonImm",
+                                Members =
+                                {
+                                    new CProperty { Name = "Id", Type = "int", Mode = PropMode.GetInit }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            WriteAndCompare(unit, nameof(TestStruct));
+        }
+
+        [Fact]
         public void TestCon()
         {
             var unit = new CUnit

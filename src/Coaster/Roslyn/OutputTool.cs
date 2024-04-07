@@ -6,6 +6,7 @@ using Coaster.API.Mod;
 using Coaster.API.Part;
 using Coaster.API.Top;
 using Coaster.API.Tree;
+using Coaster.Utils;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -31,11 +32,17 @@ namespace Coaster.Roslyn
             return SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(name));
         }
 
-        public static BaseTypeSyntax[] ToBaseTypes(this IHasInterfaces cla)
+        public static BaseTypeSyntax[] ToBaseTypes(IEnumerable<string> inputs)
         {
-            var bases = cla.Interfaces.Select(ToBaseType).ToArray();
+            var bases = inputs.Select(ToBaseType).ToArray();
             return bases.Length == 0 ? null : bases;
         }
+
+        public static BaseTypeSyntax[] ToBaseTypes(this IHasInterfaces cla)
+            => ToBaseTypes(cla.Interfaces);
+
+        public static BaseTypeSyntax[] ToBaseTypes<T>(this T cla) where T : IHasInterfaces, IHasBase
+            => ToBaseTypes(cla.Base.NullIfEmpty().AsArray().Concat(cla.Interfaces));
 
         public static ClassDeclarationSyntax ToSyntax(this IClass cla)
         {
@@ -57,13 +64,19 @@ namespace Coaster.Roslyn
             var rec = SyntaxFactory.Token(SyntaxKind.RecordKeyword);
             var clas = SyntaxFactory.RecordDeclaration(rec, cla.Name)
                 .AddModifiers(GetModifiers(cla));
+            if (cla.Mode.ToSyntax() is { } cos)
+                clas = clas.WithClassOrStructKeyword(cos);
             if (ToBaseTypes(cla) is { } bases)
                 clas = clas.AddBaseListTypes(bases);
+            var hasMembers = cla.Members.Any();
             if (ToParamSyntax(cla) is { } pl)
                 clas = clas.WithParameterList(pl);
-            else
+            else if (!hasMembers)
                 clas = clas.WithParameterList(SyntaxFactory.ParameterList());
-            clas = clas.WithSemicolonToken(GetSemi());
+            clas = hasMembers
+                ? clas.WithOpenBraceToken(GetOpenBrace()).AddMembers(ToMemberSyntax(cla))
+                    .WithCloseBraceToken(GetCloseBrace())
+                : clas.WithSemicolonToken(GetSemi());
             return clas;
         }
 
@@ -92,6 +105,16 @@ namespace Coaster.Roslyn
         public static SyntaxToken GetSemi()
         {
             return SyntaxFactory.Token(SyntaxKind.SemicolonToken);
+        }
+
+        public static SyntaxToken GetOpenBrace()
+        {
+            return SyntaxFactory.Token(SyntaxKind.OpenBraceToken);
+        }
+
+        public static SyntaxToken GetCloseBrace()
+        {
+            return SyntaxFactory.Token(SyntaxKind.CloseBraceToken);
         }
 
         public static StructDeclarationSyntax ToSyntax(this IStruct cla)
@@ -176,7 +199,18 @@ namespace Coaster.Roslyn
             }
         }
 
-        public static SyntaxToken[] GetModifiers(object obj)
+        public static SyntaxToken? ToSyntax(this RecMode rm)
+        {
+            switch (rm)
+            {
+                case RecMode.None: return null;
+                case RecMode.Struct: return SyntaxFactory.Token(SyntaxKind.StructKeyword);
+                case RecMode.Class: return SyntaxFactory.Token(SyntaxKind.ClassKeyword);
+                default: throw new ArgumentOutOfRangeException(nameof(rm), rm, null);
+            }
+        }
+
+        public static SyntaxToken[] GetModifiers(object obj, params SyntaxToken?[] adds)
         {
             var list = new List<SyntaxToken>();
             if (obj is IVisible hv && ToSyntax(hv.Visibility) is { } hvv)
@@ -190,6 +224,8 @@ namespace Coaster.Roslyn
             }
             if (obj is IInherited ih && ToSyntax(ih.Inherit) is { } ihv)
                 list.Add(ihv);
+            if (adds?.Where(a => a != default).Cast<SyntaxToken>().ToArray() is { Length: >= 1 } al)
+                list.AddRange(al);
             return list.ToArray();
         }
 
@@ -288,17 +324,26 @@ namespace Coaster.Roslyn
             return obj is IInterface;
         }
 
-        public static PropertyDeclarationSyntax ToSyntax(this IProperty prop, IHasMembers owner)
+        public static List<AccessorDeclarationSyntax> ToAccessSyntax(this IProperty prop)
         {
-            prop.Apply(owner);
-
             var get = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            var init = SyntaxFactory.AccessorDeclaration(SyntaxKind.InitAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             var set = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
             var ala = new List<AccessorDeclarationSyntax>();
-            if (prop.Mode is PropMode.Get or PropMode.GetSet) ala.Add(get);
+            if (prop.Mode is PropMode.Get or PropMode.GetSet or PropMode.GetInit) ala.Add(get);
+            if (prop.Mode is PropMode.GetInit) ala.Add(init);
             if (prop.Mode is PropMode.Set or PropMode.GetSet) ala.Add(set);
+            return ala;
+        }
+
+        public static PropertyDeclarationSyntax ToSyntax(this IProperty prop, IHasMembers owner)
+        {
+            prop.Apply(owner);
+
+            var ala = prop.ToAccessSyntax();
 
             var pt = SyntaxFactory.ParseTypeName(prop.Type);
             var property = SyntaxFactory.PropertyDeclaration(pt, prop.Name)

@@ -14,5 +14,13 @@ namespace Coaster.Model.Top
         public IList<IParam> Params { get; } = new List<IParam>();
 
         public Visibility Visibility { get; set; } = Visibility.Public;
+
+        public Inherit Inherit { get; set; }
+
+        public string Base { get; set; }
+
+        public RecMode Mode { get; set; }
+
+        public IList<IMember> Members { get; } = new List<IMember>();
     }
 }

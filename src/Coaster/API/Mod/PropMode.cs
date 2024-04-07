@@ -4,6 +4,8 @@
     {
         GetSet = 0,
 
+        GetInit,
+
         Get,
 
         Set
