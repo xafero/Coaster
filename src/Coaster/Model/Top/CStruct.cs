@@ -5,7 +5,7 @@ using Coaster.API.Top;
 
 namespace Coaster.Model.Top
 {
-    public sealed class CClass : IClass, IMember
+    public sealed class CStruct : IStruct
     {
         public string Name { get; set; }
 

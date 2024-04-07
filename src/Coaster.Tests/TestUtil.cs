@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Text;
-using Coaster.Model;
+using Coaster.Model.Top;
 using Coaster.Roslyn;
 using Coaster.Utils;
 using Xunit;

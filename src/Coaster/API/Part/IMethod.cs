@@ -1,8 +1,10 @@
-﻿using Coaster.API.Tree;
+﻿using Coaster.API.Mod;
+using Coaster.API.Tree;
 
-namespace Coaster.API.Top
+namespace Coaster.API.Part
 {
-    public interface IMethod : INamed, ITyped, IVisible, IHasParameters, IHasBody, IMember, IApplier
+    public interface IMethod : INamed, ITyped, IVisible, IHasParameters,
+        IHasBody, IMember, IApplier, IModified, IInherited
     {
     }
 }

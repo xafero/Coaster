@@ -1,6 +1,8 @@
-﻿namespace Coaster.API.Top
+﻿using Coaster.API.Mod;
+
+namespace Coaster.API.Part
 {
-    public interface IField : INamed, ITyped, IMember
+    public interface IField : INamed, ITyped, IMember, IVisible
     {
     }
 }

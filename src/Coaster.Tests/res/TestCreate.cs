@@ -14,7 +14,7 @@ namespace Example
         {
         }
 
-        public event EventHandler WebOpened;
+        public event System.EventHandler WebOpened;
     }
 
     public enum Funny

@@ -1,7 +1,9 @@
 using System.Linq;
 using System.Runtime.Serialization;
-using Coaster.API;
-using Coaster.Model;
+using Coaster.API.Mod;
+using Coaster.Model.Part;
+using Coaster.Model.Top;
+using Coaster.Model.Tree;
 using Xunit;
 using static Coaster.Tests.TestUtil;
 
@@ -67,21 +69,21 @@ namespace Coaster.Tests
                                 Name = "Coords",
                                 Members =
                                 {
-                                    new CMethod
+                                    new CConstructor
                                     {
                                         Params =
                                         {
                                             new CParam { Type = "double", Name = "x" },
                                             new CParam { Type = "double", Name = "y" }
                                         },
-                                        Body = new() { Statements = { "X = x", "Y = y" } }, IsConstructor = true
+                                        Body = new CBody { Statements = { "X = x", "Y = y" } }
                                     },
                                     new CProperty { Type = "double", Name = "X", Mode = PropMode.Get },
                                     new CProperty { Type = "double", Name = "Y", Mode = PropMode.Get },
                                     new CMethod
                                     {
-                                        Name = "ToString", Type = "string", IsOverride = true,
-                                        Body = new() { Statements = { "$\"({X}, {Y})\"" }, IsArrow = true }
+                                        Name = "ToString", Type = "string", Inherit = Inherit.Override,
+                                        Body = new CArrow { Expression = "$\"({X}, {Y})\"" }
                                     }
                                 }
                             },
@@ -186,9 +188,9 @@ namespace Coaster.Tests
                         {
                             new CMethod
                             {
-                                Name = "Main", IsStatic = true,
+                                Name = "Main", Modifier = Modifier.Static,
                                 Params = { new CParam { Type = "string[]", Name = "args" } },
-                                Body = new() { Statements = { "Console.WriteLine(args.Length)" } }
+                                Body = new CBody { Statements = { "Console.WriteLine(args.Length)" } }
                             }
                         }
                     }

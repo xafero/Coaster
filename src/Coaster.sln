@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coaster.Tests", "Coaster.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coaster", "Coaster\Coaster.csproj", "{F1F8DF9A-8604-4FF9-A6BA-928CC85AD3AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coaster.Demo", "Coaster.Demo\Coaster.Demo.csproj", "{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coaster.Demo", "Coaster.Demo\Coaster.Demo.csproj", "{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +36,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CF25651D-4559-41CE-AF4C-AA6B3560CBC2} = {CAD03D36-92E4-4E37-AC46-59FFC2F25660}
 		{F1F8DF9A-8604-4FF9-A6BA-928CC85AD3AF} = {CAD03D36-92E4-4E37-AC46-59FFC2F25660}
+		{68A9D12A-1219-4244-8DB8-6ED9A28C9D4F} = {CAD03D36-92E4-4E37-AC46-59FFC2F25660}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {95BA9685-4571-403B-8467-69243D761E2E}

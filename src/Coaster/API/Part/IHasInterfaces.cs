@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Coaster.API.Top
+namespace Coaster.API.Part
 {
     public interface IHasInterfaces
     {

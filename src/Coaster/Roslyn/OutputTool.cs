@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Coaster.API;
+using Coaster.API.Mod;
+using Coaster.API.Part;
 using Coaster.API.Top;
+using Coaster.API.Tree;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

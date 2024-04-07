@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Coaster.API
+namespace Coaster.API.Mod
 {
     [Flags]
     public enum Modifier

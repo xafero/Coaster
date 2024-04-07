@@ -5,13 +5,13 @@ using Coaster.API.Top;
 
 namespace Coaster.Model.Top
 {
-    public sealed class CClass : IClass, IMember
+    public sealed class CEnum : IEnum
     {
         public string Name { get; set; }
 
-        public IList<IMember> Members { get; } = new List<IMember>();
+        public string Type { get; set; }
 
-        public ISet<string> Interfaces { get; } = new SortedSet<string>();
+        public IList<IEnumVal> Values { get; } = new List<IEnumVal>();
 
         public Visibility Visibility { get; set; } = Visibility.Public;
     }

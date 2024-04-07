@@ -1,4 +1,4 @@
-namespace Coaster.API.Top
+namespace Coaster.API.Tree
 {
     public interface IArrow : IBody
     {

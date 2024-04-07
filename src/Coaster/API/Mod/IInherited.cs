@@ -1,4 +1,4 @@
-﻿namespace Coaster.API
+﻿namespace Coaster.API.Mod
 {
     public interface IInherited
     {
