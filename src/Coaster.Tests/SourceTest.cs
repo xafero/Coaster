@@ -300,6 +300,18 @@ namespace Coaster.Tests
                                     },
                                     new CProperty { Type = "bool", Name = "IsDone" }
                                 }
+                            },
+                            new CClass
+                            {
+                                Name = "Temp",
+                                Members =
+                                {
+                                    new CField
+                                    {
+                                        Name = "myTask", Visibility = Visibility.None,
+                                        Type = "ToDo", Value = "new ToDo(\"Decompile me\", false)"
+                                    }
+                                }
                             }
                         }
                     }

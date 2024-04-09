@@ -334,8 +334,14 @@ namespace Coaster.Roslyn
 
         public static FieldDeclarationSyntax ToSyntax(this IField fld)
         {
-            var variable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName(fld.Type))
-                .AddVariables(SyntaxFactory.VariableDeclarator(fld.Name));
+            var vvd = SyntaxFactory.VariableDeclarator(fld.Name);
+            if (fld.Value.NullIfEmpty() is { } paramVal)
+            {
+                var defaultExpr = SyntaxFactory.ParseExpression(paramVal);
+                vvd = vvd.WithInitializer(SyntaxFactory.EqualsValueClause(defaultExpr));
+            }
+            var varType = SyntaxFactory.ParseTypeName(fld.Type);
+            var variable = SyntaxFactory.VariableDeclaration(varType).AddVariables(vvd);
             var field = SyntaxFactory.FieldDeclaration(variable)
                 .AddModifiers(GetModifiers(fld));
             return field;

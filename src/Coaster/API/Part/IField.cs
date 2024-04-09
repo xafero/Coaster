@@ -2,7 +2,7 @@
 
 namespace Coaster.API.Part
 {
-    public interface IField : INamed, ITyped, IMember, IVisible
+    public interface IField : INamed, ITyped, IMember, IVisible, IValued
     {
     }
 }

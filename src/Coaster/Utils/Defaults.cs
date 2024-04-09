@@ -4,6 +4,8 @@
     {
         public const string Void = "void";
 
+        public const string Object = "object";
+
         public const string EventHandler = "System.EventHandler";
     }
 }

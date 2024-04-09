@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -59,5 +59,10 @@ namespace Sample
         }
 
         public bool IsDone { get; init; }
+    }
+
+    public class Temp
+    {
+        ToDo myTask = new ToDo("Decompile me", false);
     }
 }
