@@ -1,4 +1,4 @@
-public class MyClass
+﻿public class MyClass
 {
     private string field;
 }

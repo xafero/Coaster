@@ -9,6 +9,13 @@ namespace Coaster.Tests
 {
     internal static class TestUtil
     {
+        private static readonly string Root;
+
+        static TestUtil()
+        {
+            Root = Directory.CreateDirectory("gen").FullName;
+        }
+
         internal static void WriteAndCompare(CUnit unit, string name)
         {
             var code = unit.ToText();
@@ -19,7 +26,7 @@ namespace Coaster.Tests
         {
             name += ".cs";
 
-            WriteText(name, code);
+            WriteText(Path.Combine(Root, name), code);
             var exp = ReadText($"res/{name}");
 
             var expN = TextTool.Normalize(exp);
