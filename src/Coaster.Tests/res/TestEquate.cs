@@ -21,4 +21,57 @@ namespace Equ
         public static bool operator ==(ToDoS left, ToDoS right) => left.Equals(right);
         public static bool operator !=(ToDoS left, ToDoS right) => !(left == right);
     }
+
+    public class ToDoC
+    {
+        private readonly string _desc;
+        private readonly bool _isDone;
+        public ToDoC(string description, bool isDone)
+        {
+            _desc = description;
+            _isDone = isDone;
+        }
+
+        protected virtual Type EqualityContract
+        {
+            get
+            {
+                return typeof(ToDoC);
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return _desc;
+            }
+
+            init
+            {
+                _desc = value;
+            }
+        }
+
+        public bool IsDone
+        {
+            get
+            {
+                return _isDone;
+            }
+
+            init
+            {
+                _isDone = value;
+            }
+        }
+
+        public void Deconstruct(out string description, out bool isDone)
+        {
+            description = Description;
+            isDone = IsDone;
+        }
+
+        public override string ToString() => $"{Description}|{IsDone}";
+    }
 }
