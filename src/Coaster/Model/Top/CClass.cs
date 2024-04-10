@@ -5,7 +5,7 @@ using Coaster.API.Top;
 
 namespace Coaster.Model.Top
 {
-    public sealed class CClass : IClass, IMember
+    public sealed class CClass : IClass
     {
         public string Name { get; set; }
 
@@ -14,5 +14,7 @@ namespace Coaster.Model.Top
         public ISet<string> Interfaces { get; } = new SortedSet<string>();
 
         public Visibility Visibility { get; set; } = Visibility.Public;
+
+        public Inherit Inherit { get; set; }
     }
 }

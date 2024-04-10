@@ -3,7 +3,7 @@ using Coaster.API.Part;
 
 namespace Coaster.API.Top
 {
-    public interface IClass : INamed, IHasMembers, IHasInterfaces, IVisible
+    public interface IClass : INamed, IHasMembers, IHasInterfaces, IVisible, IMember, IInherited
     {
     }
 }

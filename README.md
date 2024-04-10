@@ -83,6 +83,16 @@ var formattedCode = Coast.Format(humanCode);
 Console.WriteLine(formattedCode);
 ```
 
+### Executing the C# Source Code
+
+Coaster provides you with a delegate to the C# Source Code:
+
+```csharp
+var func = Compiler.CreateDelegate<Func<string, string>>(unit.ToText());
+Console.WriteLine(func("Michael Che"));
+Console.WriteLine(func("Fritz Wepp"));
+```
+
 ## Building from sources
 
 Just run `dotnet pack` to build the sources.

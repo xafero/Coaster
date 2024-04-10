@@ -1,9 +1,11 @@
+using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using Coaster.API.Mod;
 using Coaster.Model.Part;
 using Coaster.Model.Top;
 using Coaster.Model.Tree;
+using Coaster.Roslyn;
 using Coaster.Utils;
 using Xunit;
 using static Coaster.Tests.TestUtil;
@@ -33,6 +35,44 @@ namespace Coaster.Tests
             });
 
             WriteAndCompare(unit, nameof(TestModify));
+        }
+
+        [Fact]
+        public void TestDynamic()
+        {
+            var unit = new CUnit
+            {
+                Members =
+                {
+                    new CClass
+                    {
+                        Name = "OneClass", Inherit = Inherit.Sealed,
+                        Members =
+                        {
+                            new CMethod
+                            {
+                                Name = "SayHello", Type = "string",
+                                Params = { new CParam { Name = "name", Type = "string" } },
+                                Body = new CBody
+                                {
+                                    Statements = { "return $\"Hello, {name}!\"" }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            WriteAndCompare(unit, nameof(TestDynamic));
+
+            var func = Compiler.CreateDelegate<Func<string, string>>(unit.ToText());
+            Assert.NotNull(func);
+
+            var res1 = func("Hans");
+            Assert.Equal("Hello, Hans!", res1);
+
+            var res2 = func("Fritz");
+            Assert.Equal("Hello, Fritz!", res2);
         }
 
         [Fact]
