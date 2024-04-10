@@ -259,6 +259,62 @@ namespace Coaster.Tests
                                         }
                                     }
                                 }
+                            },
+                            new CClass
+                            {
+                                Name = "ToDoC",
+                                Members =
+                                {
+                                    new CField { Name = "_desc", Type = "string", Modifier = Modifier.Readonly },
+                                    new CField { Name = "_isDone", Type = "bool", Modifier = Modifier.Readonly },
+                                    new CConstructor
+                                    {
+                                        Params =
+                                        {
+                                            new CParam { Name = "description", Type = "string" },
+                                            new CParam { Name = "isDone", Type = "bool" }
+                                        },
+                                        Body = new CBody
+                                        {
+                                            Statements = { "_desc = description", "_isDone = isDone" }
+                                        }
+                                    },
+                                    new CProperty
+                                    {
+                                        Name = "EqualityContract", Type = "Type", Visibility = Visibility.Protected,
+                                        Get = new CBody { Statements = { "return typeof(ToDoC)" } },
+                                        Inherit = Inherit.Virtual, Mode = PropMode.Get
+                                    },
+                                    new CProperty
+                                    {
+                                        Name = "Description", Type = "string", Mode = PropMode.GetInit,
+                                        Get = new CBody { Statements = { "return _desc" } },
+                                        Init = new CBody { Statements = { "_desc = value" } }
+                                    },
+                                    new CProperty
+                                    {
+                                        Name = "IsDone", Type = "bool", Mode = PropMode.GetInit,
+                                        Get = new CBody { Statements = { "return _isDone" } },
+                                        Init = new CBody { Statements = { "_isDone = value" } }
+                                    },
+                                    new CMethod
+                                    {
+                                        Name = "Deconstruct", Params =
+                                        {
+                                            new CParam { Name = "description", Type = "string", Mod = ParamMod.Out },
+                                            new CParam { Name = "isDone", Type = "bool", Mod = ParamMod.Out }
+                                        },
+                                        Body = new CBody
+                                        {
+                                            Statements = { "description = Description", "isDone = IsDone" }
+                                        }
+                                    },
+                                    new CMethod
+                                    {
+                                        Name = "ToString", Type = "string", Inherit = Inherit.Override,
+                                        Body = new CArrow { Expression = "$\"{Description}|{IsDone}\"" }
+                                    }
+                                }
                             }
                         }
                     }

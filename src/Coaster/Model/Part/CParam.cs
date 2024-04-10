@@ -1,4 +1,5 @@
-﻿using Coaster.API.Part;
+﻿using Coaster.API.Mod;
+using Coaster.API.Part;
 
 namespace Coaster.Model.Part
 {
@@ -9,5 +10,7 @@ namespace Coaster.Model.Part
         public string Type { get; set; }
 
         public string Value { get; set; }
+
+        public ParamMod Mod { get; set; }
     }
 }

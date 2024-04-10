@@ -14,11 +14,15 @@ namespace Coaster.Model.Part
 
         public Visibility Visibility { get; set; }
 
+        public Inherit Inherit { get; set; }
+
         public PropMode Mode { get; set; }
 
         public IBody Get { get; set; }
 
         public IBody Set { get; set; }
+
+        public IBody Init { get; set; }
 
         public void Apply(IHasMembers owner)
         {

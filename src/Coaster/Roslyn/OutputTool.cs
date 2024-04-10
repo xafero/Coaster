@@ -184,6 +184,16 @@ namespace Coaster.Roslyn
             }
         }
 
+        public static SyntaxToken? ToSyntax(this ParamMod mod)
+        {
+            switch (mod)
+            {
+                case ParamMod.None: return null;
+                case ParamMod.Out: return SyntaxFactory.Token(SyntaxKind.OutKeyword);
+                default: throw new ArgumentOutOfRangeException(nameof(mod), mod, null);
+            }
+        }
+
         public static SyntaxToken? ToSyntax(this Visibility vis)
         {
             switch (vis)
@@ -235,6 +245,8 @@ namespace Coaster.Roslyn
             }
             if (obj is IInherited ih && ToSyntax(ih.Inherit) is { } ihv)
                 list.Add(ihv);
+            if (obj is IParam ip && ToSyntax(ip.Mod) is { } ipm)
+                list.Add(ipm);
             if (adds?.Where(a => a != default).Cast<SyntaxToken>().ToArray() is { Length: >= 1 } al)
                 list.AddRange(al);
             return list.ToArray();
@@ -244,6 +256,7 @@ namespace Coaster.Roslyn
         {
             var ipn = SyntaxFactory.Identifier(par.Name);
             var prm = SyntaxFactory.Parameter(ipn)
+                .AddModifiers(GetModifiers(par))
                 .WithType(SyntaxFactory.ParseTypeName(par.Type));
             if (par.Value.NullIfEmpty() is { } paramVal)
             {
@@ -404,8 +417,7 @@ namespace Coaster.Roslyn
         public static List<AccessorDeclarationSyntax> ToAccessSyntax(this IProperty prop)
         {
             var get = ToAccDeclSyntax(SyntaxKind.GetAccessorDeclaration, prop.Get);
-            var init = SyntaxFactory.AccessorDeclaration(SyntaxKind.InitAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            var init = ToAccDeclSyntax(SyntaxKind.InitAccessorDeclaration, prop.Init);
             var set = ToAccDeclSyntax(SyntaxKind.SetAccessorDeclaration, prop.Set);
             var ala = new List<AccessorDeclarationSyntax>();
             if (prop.Mode is PropMode.Get or PropMode.GetSet or PropMode.GetInit) ala.Add(get);

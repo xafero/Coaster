@@ -13,5 +13,7 @@ namespace Coaster.Model.Part
         public Visibility Visibility { get; set; } = Visibility.Private;
 
         public string Value { get; set; }
+
+        public Modifier Modifier { get; set; }
     }
 }
