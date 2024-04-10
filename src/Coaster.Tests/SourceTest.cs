@@ -175,6 +175,100 @@ namespace Coaster.Tests
         }
 
         [Fact]
+        public void TestEquate()
+        {
+            var unit = new CUnit
+            {
+                Usings = { "System" },
+                Members =
+                {
+                    new CNamespace
+                    {
+                        Name = "Equ",
+                        Members =
+                        {
+                            new CStruct
+                            {
+                                Name = "ToDoS", Interfaces = { "IEquatable<ToDoS>" },
+                                Members =
+                                {
+                                    new CField { Name = "_desc", Type = "string" },
+                                    new CField { Name = "_isDone", Type = "bool" },
+                                    new CConstructor
+                                    {
+                                        Params =
+                                        {
+                                            new CParam { Name = "desc", Type = "string" },
+                                            new CParam { Name = "isDone", Type = "bool" }
+                                        },
+                                        Body = new CBody
+                                        {
+                                            Statements = { "_desc = desc", "_isDone = isDone" }
+                                        }
+                                    },
+                                    new CProperty
+                                    {
+                                        Name = "Description", Type = "string",
+                                        Get = new CArrow { Expression = "_desc" },
+                                        Set = new CArrow { Expression = "_desc = value" }
+                                    },
+                                    new CProperty
+                                    {
+                                        Name = "IsDone", Type = "bool",
+                                        Get = new CArrow { Expression = "_isDone" },
+                                        Set = new CArrow { Expression = "_isDone = value" }
+                                    },
+                                    new CMethod
+                                    {
+                                        Name = "Equals", Type = "bool", Modifier = Modifier.Readonly,
+                                        Params = { new CParam { Name = "other", Type = "ToDoS" } },
+                                        Body = new CArrow
+                                        {
+                                            Expression = "_desc == other._desc && _isDone == other._isDone"
+                                        }
+                                    },
+                                    new CMethod
+                                    {
+                                        Name = "Equals", Type = "bool", Inherit = Inherit.Override,
+                                        Params = { new CParam { Name = "obj", Type = "object" } },
+                                        Body = new CArrow { Expression = "obj is ToDoS other && Equals(other)" },
+                                        Modifier = Modifier.Readonly
+                                    },
+                                    new CMethod
+                                    {
+                                        Name = "GetHashCode", Type = "int", Inherit = Inherit.Override,
+                                        Body = new CArrow { Expression = "HashCode.Combine(_desc, _isDone)" },
+                                        Modifier = Modifier.Readonly
+                                    },
+                                    new COperator
+                                    {
+                                        Kind = OpMode.Equality, Body = new CArrow { Expression = "left.Equals(right)" },
+                                        Params =
+                                        {
+                                            new CParam { Name = "left", Type = "ToDoS" },
+                                            new CParam { Name = "right", Type = "ToDoS" }
+                                        }
+                                    },
+                                    new COperator
+                                    {
+                                        Kind = OpMode.Inequality, Body = new CArrow { Expression = "!(left == right)" },
+                                        Params =
+                                        {
+                                            new CParam { Name = "left", Type = "ToDoS" },
+                                            new CParam { Name = "right", Type = "ToDoS" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            WriteAndCompare(unit, nameof(TestEquate));
+        }
+
+        [Fact]
         public void TestStruct()
         {
             var unit = new CUnit

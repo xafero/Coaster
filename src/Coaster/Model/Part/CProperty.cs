@@ -1,5 +1,6 @@
 ﻿using Coaster.API.Mod;
 using Coaster.API.Part;
+using Coaster.API.Tree;
 using Coaster.Roslyn;
 using Coaster.Utils;
 
@@ -14,6 +15,10 @@ namespace Coaster.Model.Part
         public Visibility Visibility { get; set; }
 
         public PropMode Mode { get; set; }
+
+        public IBody Get { get; set; }
+
+        public IBody Set { get; set; }
 
         public void Apply(IHasMembers owner)
         {

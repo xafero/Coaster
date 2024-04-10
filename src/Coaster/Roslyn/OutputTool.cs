@@ -173,6 +173,17 @@ namespace Coaster.Roslyn
             return clas;
         }
 
+        public static SyntaxToken? ToSyntax(this OpMode mod)
+        {
+            switch (mod)
+            {
+                case OpMode.None: return null;
+                case OpMode.Equality: return SyntaxFactory.Token(SyntaxKind.EqualsEqualsToken);
+                case OpMode.Inequality: return SyntaxFactory.Token(SyntaxKind.ExclamationEqualsToken);
+                default: throw new ArgumentOutOfRangeException(nameof(mod), mod, null);
+            }
+        }
+
         public static SyntaxToken? ToSyntax(this Visibility vis)
         {
             switch (vis)
@@ -282,6 +293,21 @@ namespace Coaster.Roslyn
             return method;
         }
 
+        public static OperatorDeclarationSyntax ToSyntax(this IOperator met, IHasMembers _)
+        {
+            var rt = SyntaxFactory.ParseTypeName(met.Type);
+            var ot = ToSyntax(met.Kind)!.Value;
+            var method = SyntaxFactory.OperatorDeclaration(rt, ot)
+                .AddModifiers(GetModifiers(met));
+            if (ToArrowSyntax(met) is { } arrow)
+                method = method.WithExpressionBody(arrow).WithSemicolonToken(GetSemi());
+            else if (ToBlockSyntax(met) is { } block)
+                method = method.WithBody(block);
+            if (ToParamSyntax(met) is { } pl)
+                method = method.WithParameterList(pl);
+            return method;
+        }
+
         public static MethodDeclarationSyntax ToSyntax(this IMethod met, IHasMembers owner)
         {
             met.Apply(owner);
@@ -304,25 +330,31 @@ namespace Coaster.Roslyn
             return body is IArrow;
         }
 
-        public static ArrowExpressionClauseSyntax ToArrowSyntax(this IHasBody owner)
+        public static ArrowExpressionClauseSyntax ToArrowSyntax(this IHasBody owner) 
+            => ToArrowSyntax(owner?.Body);
+
+        public static ArrowExpressionClauseSyntax ToArrowSyntax(this IBody body)
         {
-            if (owner?.Body == null || !owner.Body.IsArrow())
+            if (body == null || !body.IsArrow())
             {
                 return null;
             }
-            var statements = owner.Body.Statements;
+            var statements = body.Statements;
             var single = SyntaxFactory.ParseExpression(statements.Single());
             var arrow = SyntaxFactory.ArrowExpressionClause(single);
             return arrow;
         }
 
-        public static BlockSyntax ToBlockSyntax(this IHasBody owner)
+        public static BlockSyntax ToBlockSyntax(this IHasBody owner) 
+            => ToBlockSyntax(owner?.Body);
+
+        public static BlockSyntax ToBlockSyntax(this IBody body)
         {
-            if (owner?.Body == null || owner.Body.IsArrow())
+            if (body == null || body.IsArrow())
             {
                 return null;
             }
-            var statements = owner.Body.Statements;
+            var statements = body.Statements;
             var lines = statements.Select(s =>
             {
                 var text = s.EndsWith(";") ? s : $"{s};";
@@ -357,14 +389,24 @@ namespace Coaster.Roslyn
             return obj is IRecord;
         }
 
+        public static AccessorDeclarationSyntax ToAccDeclSyntax(SyntaxKind kind, IBody body)
+        {
+            var acc = SyntaxFactory.AccessorDeclaration(kind);
+            if (ToArrowSyntax(body) is { } arrow)
+                acc = acc.WithExpressionBody(arrow).WithSemicolonToken(GetSemi());
+            else if (ToBlockSyntax(body) is { } block)
+                acc = acc.WithBody(block);
+            else
+                acc = acc.WithSemicolonToken(GetSemi());
+            return acc;
+        }
+
         public static List<AccessorDeclarationSyntax> ToAccessSyntax(this IProperty prop)
         {
-            var get = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            var get = ToAccDeclSyntax(SyntaxKind.GetAccessorDeclaration, prop.Get);
             var init = SyntaxFactory.AccessorDeclaration(SyntaxKind.InitAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
-            var set = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            var set = ToAccDeclSyntax(SyntaxKind.SetAccessorDeclaration, prop.Set);
             var ala = new List<AccessorDeclarationSyntax>();
             if (prop.Mode is PropMode.Get or PropMode.GetSet or PropMode.GetInit) ala.Add(get);
             if (prop.Mode is PropMode.GetInit) ala.Add(init);
@@ -419,6 +461,7 @@ namespace Coaster.Roslyn
                 IEvent v => ToSyntax(v),
                 IProperty p => ToSyntax(p, owner),
                 IConstructor o => ToSyntax(o, owner),
+                IOperator w => ToSyntax(w, owner),
                 IMethod m => ToSyntax(m, owner),
                 _ => throw new InvalidOperationException($"{member} ?!")
             };

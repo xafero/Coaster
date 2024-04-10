@@ -6,5 +6,9 @@ namespace Coaster.API.Part
     public interface IProperty : INamed, ITyped, IVisible, IMember, IApplier
     {
         PropMode Mode { get; }
+
+        IBody Get { get; }
+
+        IBody Set { get; }
     }
 }
